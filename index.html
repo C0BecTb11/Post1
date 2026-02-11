@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Интерактивная карта</title>
 <style>
   html, body {
     margin: 0;
@@ -23,9 +17,14 @@
     cursor: grab;
   }
 
+  /* Картинка теперь абсолютная и занимает весь контейнер */
   .map-image {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover; /* растягивает картинку на весь контейнер */
     transform-origin: 0 0;
     user-select: none;
     -webkit-user-drag: none;
@@ -53,11 +52,10 @@
     box-shadow: 0 0 10px #fff;
   }
 
-  /* Цветовые зоны (светящиеся области) */
   .zone {
     position: absolute;
     border-radius: 50%;
-    pointer-events: none; /* чтобы не мешали клику */
+    pointer-events: none;
     opacity: 0.3;
   }
 
@@ -65,7 +63,6 @@
   .zone.green { background: lime; }
   .zone.blue { background: cyan; }
 
-  /* Всплывающие подсказки */
   .tooltip {
     position: absolute;
     padding: 5px 10px;
@@ -80,7 +77,6 @@
     z-index: 5;
   }
 
-  /* Модальное окно */
   .modal {
     display: none;
     position: fixed;
@@ -115,176 +111,3 @@
     color: #fff;
   }
 </style>
-</head>
-<body>
-
-<div class="map-container" id="mapContainer">
-  <img src="images/IMG_20251123_115155_038.png" alt="Карта" class="map-image" id="mapImage">
-
-  <!-- Пример кнопок с иконками и подсказками -->
-  <button class="map-button" style="top: 30%; left: 40%;" 
-    data-name="Фракция A" 
-    data-info="Описание фракции A"
-    data-tooltip="Главный центр Фракции A">
-    🛡 Фракция A
-  </button>
-
-  <button class="map-button" style="top: 50%; left: 60%;" 
-    data-name="Фракция B" 
-    data-info="Описание фракции B"
-    data-tooltip="Секретная база Фракции B">
-    ⚔️ Фракция B
-  </button>
-
-  <button class="map-button" style="top: 70%; left: 20%;" 
-    data-name="Фракция C" 
-    data-info="Описание фракции C"
-    data-tooltip="Аванпост Фракции C">
-    🔮 Фракция C
-  </button>
-
-  <!-- Цветовые зоны -->
-  <div class="zone red" style="top: 30%; left: 40%; width: 100px; height: 100px;"></div>
-  <div class="zone green" style="top: 50%; left: 60%; width: 120px; height: 120px;"></div>
-  <div class="zone blue" style="top: 70%; left: 20%; width: 90px; height: 90px;"></div>
-
-  <!-- Подсказка -->
-  <div class="tooltip" id="tooltip"></div>
-</div>
-
-<!-- Модальное окно -->
-<div class="modal" id="modal">
-  <div class="modal-content" id="modalContent">
-    <span class="close-btn" id="closeModal">&times;</span>
-    <h2 id="modalTitle"></h2>
-    <p id="modalText"></p>
-  </div>
-</div>
-
-<script>
-  const container = document.getElementById('mapContainer');
-  const map = document.getElementById('mapImage');
-  const buttons = document.querySelectorAll('.map-button');
-  const tooltip = document.getElementById('tooltip');
-
-  let scale = 1;
-  let originX = 0;
-  let originY = 0;
-  let startX = 0;
-  let startY = 0;
-  let isDragging = false;
-
-  function setTransform() {
-    map.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
-    buttons.forEach(btn => {
-      btn.style.transform = `translate(-50%, -50%) scale(${scale})`;
-    });
-    document.querySelectorAll('.zone').forEach(zone => {
-      zone.style.transform = `translate(-50%, -50%) scale(${scale})`;
-    });
-  }
-
-  // Зум колесиком мыши
-  container.addEventListener('wheel', e => {
-    e.preventDefault();
-    const delta = -e.deltaY / 500;
-    scale = Math.min(Math.max(0.5, scale + delta), 5);
-    setTransform();
-  });
-
-  // Перетаскивание карты
-  container.addEventListener('mousedown', e => {
-    isDragging = true;
-    startX = e.clientX - originX;
-    startY = e.clientY - originY;
-    container.style.cursor = 'grabbing';
-  });
-
-  container.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    originX = e.clientX - startX;
-    originY = e.clientY - startY;
-    setTransform();
-  });
-
-  container.addEventListener('mouseup', () => {
-    isDragging = false;
-    container.style.cursor = 'grab';
-  });
-
-  container.addEventListener('mouseleave', () => {
-    isDragging = false;
-    container.style.cursor = 'grab';
-  });
-
-  // Мобильный зум и drag
-  let initialDistance = null;
-  let initialScale = scale;
-
-  container.addEventListener('touchstart', e => {
-    if (e.touches.length === 2) {
-      e.preventDefault();
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
-      initialDistance = Math.hypot(dx, dy);
-      initialScale = scale;
-    } else if (e.touches.length === 1) {
-      startX = e.touches[0].clientX - originX;
-      startY = e.touches[0].clientY - originY;
-    }
-  });
-
-  container.addEventListener('touchmove', e => {
-    if (e.touches.length === 2 && initialDistance) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
-      const distance = Math.hypot(dx, dy);
-      scale = Math.min(Math.max(0.5, initialScale * (distance / initialDistance)), 5);
-      setTransform();
-    } else if (e.touches.length === 1) {
-      originX = e.touches[0].clientX - startX;
-      originY = e.touches[0].clientY - startY;
-      setTransform();
-    }
-  });
-
-  container.addEventListener('touchend', e => {
-    if (e.touches.length < 2) initialDistance = null;
-  });
-
-  // Модальное окно
-  const modal = document.getElementById('modal');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalText = document.getElementById('modalText');
-  const closeModal = document.getElementById('closeModal');
-
-  buttons.forEach(btn => {
-    // Модальное окно по клику
-    btn.addEventListener('click', () => {
-      modalTitle.textContent = btn.dataset.name;
-      modalText.textContent = btn.dataset.info;
-      modal.style.display = 'flex';
-    });
-
-    // Подсказка при наведении
-    btn.addEventListener('mouseenter', e => {
-      tooltip.textContent = btn.dataset.tooltip || '';
-      tooltip.style.opacity = 1;
-    });
-
-    btn.addEventListener('mousemove', e => {
-      tooltip.style.left = (e.clientX + 10) + 'px';
-      tooltip.style.top = (e.clientY + 10) + 'px';
-    });
-
-    btn.addEventListener('mouseleave', () => {
-      tooltip.style.opacity = 0;
-    });
-  });
-
-  closeModal.addEventListener('click', () => modal.style.display = 'none');
-  window.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
-</script>
-
-</body>
-</html>
