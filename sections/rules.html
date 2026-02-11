@@ -2,10 +2,10 @@
 <p>Выберите подраздел для просмотра:</p>
 
 <div class="rules-buttons">
-  <button class="sub-rule-button" data-target="general">Общие правила</button>
-  <button class="sub-rule-button" data-target="character">Правила создания персонажа</button>
-  <button class="sub-rule-button" data-target="faction">Правила создания фракции</button>
-  <button class="sub-rule-button" data-target="combat">Боевая система</button>
+  <div class="nav-button sub-rule-button" data-target="general">Общие правила</div>
+  <div class="nav-button sub-rule-button" data-target="character">Правила создания персонажа</div>
+  <div class="nav-button sub-rule-button" data-target="faction">Правила создания фракции</div>
+  <div class="nav-button sub-rule-button" data-target="combat">Боевая система</div>
 </div>
 
 <!-- Контейнер для подгружаемого контента внутри правил -->
@@ -13,7 +13,6 @@
   <p>Выберите подраздел для просмотра.</p>
 </div>
 
-<!-- Скрипт для подкатегорий -->
 <script>
   const subButtons = document.querySelectorAll('.sub-rule-button');
   const subContainer = document.getElementById('sub-rules-container');
