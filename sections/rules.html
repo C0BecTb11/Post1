@@ -1,0 +1,30 @@
+<h2>Правила</h2>
+<p>Выберите подраздел для просмотра:</p>
+
+<div class="rules-buttons">
+  <button class="sub-rule-button" data-target="general">Общие правила</button>
+  <button class="sub-rule-button" data-target="character">Правила создания персонажа</button>
+  <button class="sub-rule-button" data-target="faction">Правила создания фракции</button>
+  <button class="sub-rule-button" data-target="combat">Боевая система</button>
+</div>
+
+<!-- Контейнер для подгружаемого контента внутри правил -->
+<div id="sub-rules-container" class="content" style="margin-top: 15px;">
+  <p>Выберите подраздел для просмотра.</p>
+</div>
+
+<!-- Скрипт для подкатегорий -->
+<script>
+  const subButtons = document.querySelectorAll('.sub-rule-button');
+  const subContainer = document.getElementById('sub-rules-container');
+
+  subButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      fetch(`sections/rules-${target}.html`)
+        .then(res => res.text())
+        .then(html => subContainer.innerHTML = html)
+        .catch(err => subContainer.innerHTML = `<p>Ошибка загрузки подраздела: ${err}</p>`);
+    });
+  });
+</script>
