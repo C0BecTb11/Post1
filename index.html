@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Главная | Постапокалипсис Лиорема</title>
 <style>
-  /* --- Основные стили страницы --- */
+  /* --- Основные стили --- */
   body {
     margin: 0;
     padding: 0;
@@ -21,40 +21,39 @@
     text-shadow: 0 0 10px #00ffcc;
   }
 
-  /* --- Контейнер кнопок навигации --- */
+  /* --- Навигация --- */
   .nav-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px;
-    padding: 20px;
+    gap: 15px;
+    padding: 15px;
   }
 
-  /* --- Стиль кнопок --- */
   .nav-button {
     background: linear-gradient(145deg, #111, #222);
     border: 2px solid #00ffcc;
     border-radius: 15px;
-    padding: 20px 40px;
+    padding: 15px 30px;
     font-size: 1.2em;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
-    box-shadow: 0 0 15px #00ffcc44;
+    box-shadow: 0 0 10px #00ffcc44;
   }
 
   .nav-button:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
     background: linear-gradient(145deg, #222, #111);
     box-shadow: 0 0 25px #00ffccaa;
   }
 
-  /* --- Секция контента --- */
+  /* --- Секции контента --- */
   .content {
-    max-width: 900px;
-    margin: 0 auto;
+    max-width: 1000px;
+    margin: 20px auto;
     padding: 20px;
-    display: none; /* скрыто до клика */
+    display: none;
     border: 1px solid #00ffcc;
     border-radius: 15px;
     background: #111;
@@ -63,7 +62,7 @@
 
   .content.active {
     display: block;
-    animation: fadeIn 0.5s ease;
+    animation: fadeIn 0.4s ease;
   }
 
   @keyframes fadeIn {
@@ -71,11 +70,33 @@
     to {opacity: 1; transform: translateY(0);}
   }
 
+  /* --- Интерактивные кнопки внутри секций --- */
+  .resource-btn, .map-zone {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    border: 2px solid #00ffcc;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #111;
+    transition: 0.3s;
+  }
+
+  .resource-btn:hover, .map-zone:hover {
+    background: #222;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #00ffccaa;
+  }
+
   /* --- Адаптив --- */
   @media(max-width: 600px){
     .nav-button {
-      padding: 15px 25px;
+      padding: 12px 20px;
       font-size: 1em;
+    }
+    .resource-btn, .map-zone {
+      padding: 8px 15px;
+      font-size: 0.9em;
     }
   }
 </style>
@@ -84,6 +105,7 @@
 
 <h1>Постапокалипсис Лиорема</h1>
 
+<!-- --- Навигация --- -->
 <div class="nav-container">
   <div class="nav-button" data-target="lore">Лор</div>
   <div class="nav-button" data-target="faq">FAQ</div>
@@ -92,7 +114,7 @@
   <div class="nav-button" data-target="map">Карта</div>
 </div>
 
-<!-- Контентные секции -->
+<!-- --- Секции контента --- -->
 <div id="lore" class="content">
   <h2>Лор мира</h2>
   <p>Здесь будет собран весь лор: расы, фракции, события...</p>
@@ -110,15 +132,23 @@
 
 <div id="resources" class="content">
   <h2>Ресурсы</h2>
-  <p>Интерактивный склад ресурсов, руды, материалы, техника.</p>
+  <p>Выберите ресурс, чтобы узнать детали:</p>
+  <div class="resource-btn" data-resource="karbazion">Карбазион</div>
+  <div class="resource-btn" data-resource="cestylit">Цестюлит</div>
+  <div class="resource-btn" data-resource="rationium">Ратионий</div>
 </div>
 
 <div id="map" class="content">
   <h2>Карта мира</h2>
-  <p>Интерактивная карта с кликабельными зонами и локациями.</p>
+  <p>Кликайте на зоны для информации:</p>
+  <div class="map-zone" data-zone="zone1">Зона 1</div>
+  <div class="map-zone" data-zone="zone2">Зона 2</div>
+  <div class="map-zone" data-zone="zone3">Зона 3</div>
 </div>
 
+<!-- --- Скрипт для навигации и интерактива --- -->
 <script>
+  // Переключение вкладок
   const buttons = document.querySelectorAll('.nav-button');
   const contents = document.querySelectorAll('.content');
 
@@ -127,6 +157,22 @@
       contents.forEach(c => c.classList.remove('active'));
       const target = document.getElementById(btn.dataset.target);
       target.classList.add('active');
+    });
+  });
+
+  // Интерактивные ресурсы
+  const resourceBtns = document.querySelectorAll('.resource-btn');
+  resourceBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      alert('Вы выбрали ресурс: ' + btn.dataset.resource);
+    });
+  });
+
+  // Интерактивные зоны карты
+  const mapZones = document.querySelectorAll('.map-zone');
+  mapZones.forEach(zone => {
+    zone.addEventListener('click', () => {
+      alert('Вы выбрали зону: ' + zone.dataset.zone);
     });
   });
 </script>
