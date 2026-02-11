@@ -61,3 +61,52 @@ h1 {
     font-size: 1em;
   }
 }
+
+/* --- Контейнер кнопок FAQ --- */
+.faq-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+/* --- Кнопки FAQ --- */
+.faq-btn {
+  padding: 15px 25px;
+  font-size: 1em;
+  border: 2px solid #00ffcc;
+  border-radius: 12px;
+  background: #111;
+  color: #f0f0f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px #00ffcc44;
+}
+
+.faq-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #00ffccaa;
+}
+
+/* --- Красный неон для особой кнопки --- */
+.red-neon {
+  border-color: #ff0000;
+  box-shadow: 0 0 15px #ff0000aa, 0 0 30px #ff000055;
+  color: #ff5555;
+}
+
+.red-neon:hover {
+  box-shadow: 0 0 25px #ff0000ff, 0 0 50px #ff000088;
+}
+
+/* --- Попап/контент внутри FAQ --- */
+.content-popup {
+  margin-top: 20px;
+  padding: 15px;
+  background: #111;
+  border: 1px solid #00ffcc;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #00ffcc44;
+  display: none; /* скрыт до клика */
+}
