@@ -2,132 +2,159 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>ТЕРМИНАЛ УБЕЖИЩА</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Интерактивная карта галактики</title>
 <style>
-body {
-  background: #0b0e0b;
-  color: #9cff9c;
-  font-family: monospace;
-  margin: 0;
-  padding: 20px;
-}
+  body {
+    margin: 0;
+    font-family: sans-serif;
+    background: #111;
+    color: #fff;
+    overflow-x: hidden;
+  }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  animation: fadeIn 2s forwards;
-}
+  .map-container {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    overflow: hidden;
+    touch-action: none; /* для жестов */
+  }
 
-h1, h2 {
-  color: #caffca;
-  border-bottom: 1px solid #2a4;
-  padding-bottom: 4px;
-}
+  .map-image {
+    width: 100%;
+    display: block;
+    transform-origin: 0 0;
+    transition: transform 0.2s ease;
+  }
 
-.section {
-  margin-top: 32px;
-}
+  .location {
+    position: absolute;
+    background-color: rgba(255,255,255,0.2);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.3s ease;
+  }
 
-.terminal {
-  background: #050705;
-  border: 1px solid #2a4;
-  padding: 16px;
-  box-shadow: 0 0 12px rgba(100,255,100,0.15);
-}
+  .location:hover {
+    background-color: rgba(255,255,255,0.8);
+    color: #000;
+    transform: scale(1.2);
+  }
 
-.cursor::after {
-  content: "▌";
-  animation: blink 1s infinite;
-}
+  /* Модальное окно */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
 
-.alert {
-  color: #ffcc66;
-  animation: pulse 1.5s infinite;
-}
+  .modal-content {
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90%;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+  }
 
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0; }
-  100% { opacity: 1; }
-}
+  .close {
+    margin-top: 15px;
+    cursor: pointer;
+    color: #f00;
+    font-weight: bold;
+  }
 
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
-}
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.line {
-  opacity: 0;
-  animation: appear 1s forwards;
-}
-
-@keyframes appear {
-  to { opacity: 1; }
-}
+  /* Адаптация под мобильные */
+  @media(max-width:600px){
+    .location { padding: 4px 8px; font-size: 14px; }
+    .modal-content { font-size: 14px; }
+  }
 </style>
 </head>
-
 <body>
 
-<div class="container terminal">
+<div class="map-container" id="mapContainer">
+  <img src="https://via.placeholder.com/1000x600/111/fff?text=Карта+Галактики" alt="Карта" class="map-image" id="mapImage">
 
-<h1>☢ ТЕРМИНАЛ УБЕЖИЩА<span class="cursor"></span></h1>
-
-<p class="alert">СТАТУС СИСТЕМЫ: НЕСТАБИЛЕН</p>
-
-<div class="section">
-<h2>🌍 ЛОР МИРА</h2>
-
-<p class="line">Катастрофа не уничтожила мир мгновенно.</p>
-<p class="line">Он умирал — через ошибки, войны и утечки.</p>
-<p class="line">Города стали ловушками.</p>
-<p class="line">Системы — мёртвым грузом.</p>
-<p class="line">Выжившие больше не граждане.</p>
-<p class="line"><strong>Они — остаток.</strong></p>
+  <!-- Точки на карте -->
+  <div class="location" style="top:60px; left:140px;" data-name="Город А" data-info="Описание Город А">Город А</div>
+  <div class="location" style="top:250px; left:350px;" data-name="Лес Б" data-info="Описание Лес Б">Лес Б</div>
+  <div class="location" style="top:420px; left:200px;" data-name="База С" data-info="Описание База С">База С</div>
 </div>
 
-<div class="section">
-<h2>❓ ВСТУПЛЕНИЕ</h2>
-
-<p>> Это текстовая ролевая игра в сеттинге пост-апокалипсиса.</p>
-<p>> Никаких героев. Никакой брони от сюжета.</p>
-<p>> Выживание зависит от решений.</p>
-
-<p><strong>Как начать:</strong></p>
-<p>1. Ознакомься с лором</p>
-<p>2. Прочитай правила</p>
-<p>3. Создай персонажа</p>
-<p>4. Дождись допуска</p>
-</div>
-
-<div class="section">
-<h2>📜 ПРАВИЛА</h2>
-
-<p>• Уважение к игрокам — обязательно</p>
-<p>• Реализм и последствия — основа</p>
-<p>• Ресурсы ограничены</p>
-<p>• Смерть персонажа возможна</p>
-<p>• Администрация — арбитр</p>
-</div>
-
-<div class="section">
-<p class="alert">> ЕСЛИ ТЫ ЧИТАЕШЬ ЭТО — ЗНАЧИТ УБЕЖИЩЕ ЕЩЁ ДЕРЖИТСЯ.</p>
-</div>
-
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2 id="loc-name"></h2>
+    <p id="loc-info"></p>
+    <div class="close" onclick="closeModal()">Закрыть</div>
+  </div>
 </div>
 
 <script>
-const lines = document.querySelectorAll('.line');
-lines.forEach((line, i) => {
-  line.style.animationDelay = `${i * 0.6}s`;
-});
+  // Клик по точке
+  const locations = document.querySelectorAll('.location');
+  const modal = document.getElementById('modal');
+  const locName = document.getElementById('loc-name');
+  const locInfo = document.getElementById('loc-info');
+
+  locations.forEach(loc => {
+    loc.addEventListener('click', () => {
+      locName.textContent = loc.dataset.name;
+      locInfo.textContent = loc.dataset.info;
+      modal.style.display = 'flex';
+    });
+  });
+
+  function closeModal(){
+    modal.style.display = 'none';
+  }
+
+  // Зум карты (для мыши и тачскрина)
+  const mapContainer = document.getElementById('mapContainer');
+  const mapImage = document.getElementById('mapImage');
+  let scale = 1;
+  let startX = 0, startY = 0;
+  let originX = 0, originY = 0;
+
+  // мышь
+  mapContainer.addEventListener('wheel', e => {
+    e.preventDefault();
+    scale += e.deltaY * -0.001;
+    scale = Math.min(Math.max(.5, scale), 3);
+    mapImage.style.transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
+  });
+
+  // тач
+  let pinchStart = 0;
+  mapContainer.addEventListener('touchmove', e => {
+    if(e.touches.length === 2){
+      e.preventDefault();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      if(!pinchStart) pinchStart = dist;
+      scale *= dist / pinchStart;
+      scale = Math.min(Math.max(.5, scale), 3);
+      mapImage.style.transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
+      pinchStart = dist;
+    }
+  });
+  mapContainer.addEventListener('touchend', e => {
+    if(e.touches.length < 2) pinchStart = 0;
+  });
 </script>
 
 </body>
