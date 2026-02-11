@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>ТЕРМИНАЛ УБЕЖИЩА</title>
+
+<style>
+body {
+  background: #0b0e0b;
+  color: #9cff9c;
+  font-family: monospace;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  animation: fadeIn 2s forwards;
+}
+
+h1, h2 {
+  color: #caffca;
+  border-bottom: 1px solid #2a4;
+  padding-bottom: 4px;
+}
+
+.section {
+  margin-top: 32px;
+}
+
+.terminal {
+  background: #050705;
+  border: 1px solid #2a4;
+  padding: 16px;
+  box-shadow: 0 0 12px rgba(100,255,100,0.15);
+}
+
+.cursor::after {
+  content: "▌";
+  animation: blink 1s infinite;
+}
+
+.alert {
+  color: #ffcc66;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.line {
+  opacity: 0;
+  animation: appear 1s forwards;
+}
+
+@keyframes appear {
+  to { opacity: 1; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container terminal">
+
+<h1>☢ ТЕРМИНАЛ УБЕЖИЩА<span class="cursor"></span></h1>
+
+<p class="alert">СТАТУС СИСТЕМЫ: НЕСТАБИЛЕН</p>
+
+<div class="section">
+<h2>🌍 ЛОР МИРА</h2>
+
+<p class="line">Катастрофа не уничтожила мир мгновенно.</p>
+<p class="line">Он умирал — через ошибки, войны и утечки.</p>
+<p class="line">Города стали ловушками.</p>
+<p class="line">Системы — мёртвым грузом.</p>
+<p class="line">Выжившие больше не граждане.</p>
+<p class="line"><strong>Они — остаток.</strong></p>
+</div>
+
+<div class="section">
+<h2>❓ ВСТУПЛЕНИЕ</h2>
+
+<p>> Это текстовая ролевая игра в сеттинге пост-апокалипсиса.</p>
+<p>> Никаких героев. Никакой брони от сюжета.</p>
+<p>> Выживание зависит от решений.</p>
+
+<p><strong>Как начать:</strong></p>
+<p>1. Ознакомься с лором</p>
+<p>2. Прочитай правила</p>
+<p>3. Создай персонажа</p>
+<p>4. Дождись допуска</p>
+</div>
+
+<div class="section">
+<h2>📜 ПРАВИЛА</h2>
+
+<p>• Уважение к игрокам — обязательно</p>
+<p>• Реализм и последствия — основа</p>
+<p>• Ресурсы ограничены</p>
+<p>• Смерть персонажа возможна</p>
+<p>• Администрация — арбитр</p>
+</div>
+
+<div class="section">
+<p class="alert">> ЕСЛИ ТЫ ЧИТАЕШЬ ЭТО — ЗНАЧИТ УБЕЖИЩЕ ЕЩЁ ДЕРЖИТСЯ.</p>
+</div>
+
+</div>
+
+<script>
+const lines = document.querySelectorAll('.line');
+lines.forEach((line, i) => {
+  line.style.animationDelay = `${i * 0.6}s`;
+});
+</script>
+
+</body>
+</html>
