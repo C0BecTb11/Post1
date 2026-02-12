@@ -1,44 +1,40 @@
 <h2>FAQ</h2>
+<p>Выберите подраздел для просмотра:</p>
 
-<!-- Навигация под-разделов FAQ -->
-<div class="nav-container">
-  <div class="nav-button red-neon" data-target="how-to-join.html">Как вступить?</div>
-  <div class="nav-button" data-target="character-form.html">Шаблон анкеты персонажа</div>
-  <div class="nav-button" data-target="faction-form.html">Шаблон анкеты фракции</div>
+<div class="rules-buttons">
+  <div class="nav-button sub-faq-button red-neon" data-target="how-to-join">
+    Как вступить?
+  </div>
+
+  <div class="nav-button sub-faq-button" data-target="character-form">
+    Шаблон анкеты персонажа
+  </div>
+
+  <div class="nav-button sub-faq-button" data-target="faction-form">
+    Шаблон анкеты фракции
+  </div>
 </div>
 
-<!-- Контентный контейнер -->
-<div id="faq-content" class="content">
-  <p>Выберите раздел, чтобы открыть информацию.</p>
+<!-- Контейнер для подгружаемого контента внутри FAQ -->
+<div id="sub-faq-container" class="content" style="margin-top: 15px;">
+  <p>Выберите подраздел для просмотра. Контент пока отсутствует.</p>
 </div>
-
-<style>
-/* --- Красная неоновая кнопка --- */
-.red-neon {
-  border-color: #ff0000;
-  box-shadow: 0 0 15px #ff0000, 0 0 30px #ff000055;
-}
-
-.red-neon:hover {
-  box-shadow: 0 0 30px #ff0000, 0 0 60px #ff000088;
-}
-</style>
 
 <script>
-const faqButtons = document.querySelectorAll('.nav-button');
-const faqContainer = document.getElementById('faq-content');
+  const faqButtons = document.querySelectorAll('.sub-faq-button');
+  const faqContainer = document.getElementById('sub-faq-container');
 
-faqButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const file = btn.dataset.target;
-    fetch(`sections/${file}`)
-      .then(res => res.text())
-      .then(html => {
-        faqContainer.innerHTML = html;
-      })
-      .catch(err => {
-        faqContainer.innerHTML = `<p>Ошибка загрузки: ${err}</p>`;
-      });
+  faqButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+
+      fetch(`sections/faq-${target}.html`)
+        .then(res => {
+          if (!res.ok) return `<p>Контент для "${btn.textContent}" пока не готов.</p>`;
+          return res.text();
+        })
+        .then(html => faqContainer.innerHTML = html)
+        .catch(err => faqContainer.innerHTML = `<p>Ошибка загрузки подраздела: ${err}</p>`);
+    });
   });
-});
 </script>
