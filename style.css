@@ -61,3 +61,13 @@ h1 {
     font-size: 1em;
   }
 }
+
+/* Красная неоновая кнопка */
+.red-neon {
+  border-color: #ff0000;
+  box-shadow: 0 0 15px #ff0000, 0 0 30px #ff000055;
+}
+
+.red-neon:hover {
+  box-shadow: 0 0 30px #ff0000, 0 0 60px #ff000088;
+}
