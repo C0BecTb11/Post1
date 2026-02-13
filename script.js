@@ -42,3 +42,17 @@ document.addEventListener("click", function (e) {
     });
 
 });
+
+.then(html => {
+  if (html) {
+    faqContainer.innerHTML = html;
+
+    // Прокрутка к блоку с контентом
+    setTimeout(() => {
+      faqContainer.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 100);
+  }
+})
