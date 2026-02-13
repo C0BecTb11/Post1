@@ -71,3 +71,14 @@ h1 {
 .red-neon:hover {
   box-shadow: 0 0 30px #ff0000, 0 0 60px #ff000088;
 }
+
+.warning-block {
+  border: 2px solid #ff0000;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background: rgba(255, 0, 0, 0.08);
+  box-shadow: 0 0 15px #ff000055;
+  color: #ff4d4d;
+  font-weight: 600;
+}
