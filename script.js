@@ -33,16 +33,6 @@ document.addEventListener("click", function (e) {
       }
       return res.text();
     })
-    .then(html => {
-      if (html) faqContainer.innerHTML = html;
-    })
-    .catch(err => {
-      faqContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
-      console.error(err);
-    });
-
-});
-
 .then(html => {
   if (html) {
     faqContainer.innerHTML = html;
@@ -56,3 +46,9 @@ document.addEventListener("click", function (e) {
     }, 100);
   }
 })
+    .catch(err => {
+      faqContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
+      console.error(err);
+    });
+
+});
