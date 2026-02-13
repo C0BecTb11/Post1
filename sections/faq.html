@@ -15,26 +15,6 @@
   </div>
 </div>
 
-<!-- Контейнер для подгружаемого контента внутри FAQ -->
 <div id="sub-faq-container" class="content" style="margin-top: 15px;">
   <p>Выберите подраздел для просмотра. Контент пока отсутствует.</p>
 </div>
-
-<script>
-  const faqButtons = document.querySelectorAll('.sub-faq-button');
-  const faqContainer = document.getElementById('sub-faq-container');
-
-  faqButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.dataset.target;
-
-      fetch(`sections/faq-${target}.html`)
-        .then(res => {
-          if (!res.ok) return `<p>Контент для "${btn.textContent}" пока не готов.</p>`;
-          return res.text();
-        })
-        .then(html => faqContainer.innerHTML = html)
-        .catch(err => faqContainer.innerHTML = `<p>Ошибка загрузки подраздела: ${err}</p>`);
-    });
-  });
-</script>
