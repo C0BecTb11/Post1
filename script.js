@@ -38,14 +38,16 @@ document.addEventListener("click", function (e) {
     faqContainer.innerHTML = html;
 
     // Прокрутка к блоку с контентом
-    setTimeout(() => {
-      faqContainer.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }, 100);
-  }
-})
+setTimeout(() => {
+  const rect = faqContainer.getBoundingClientRect();
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const targetY = rect.top + scrollTop - 20; // -20 небольшой отступ
+
+  window.scrollTo({
+    top: targetY,
+    behavior: "smooth"
+  });
+}, 150);
     .catch(err => {
       faqContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
       console.error(err);
