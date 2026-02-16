@@ -17,6 +17,8 @@ document.addEventListener("click", function (e) {
   const mainBtn = e.target.closest(".nav-button.main-nav");
   if (mainBtn) {
 
+    playClick();
+
     const target = mainBtn.dataset.target;
 
     fetch(`sections/${target}.html`)
@@ -38,6 +40,8 @@ document.addEventListener("click", function (e) {
 
   const faqBtn = e.target.closest(".sub-faq-button");
   if (faqBtn) {
+
+    playClick();
 
     const faqContainer = document.getElementById("sub-faq-container");
     if (!faqContainer) return;
@@ -83,6 +87,8 @@ document.addEventListener("click", function (e) {
 
   const ruleBtn = e.target.closest(".sub-rule-button");
   if (ruleBtn) {
+
+    playClick();
 
     const ruleContainer = document.getElementById("sub-rules-container");
     if (!ruleContainer) return;
