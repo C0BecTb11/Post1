@@ -1,3 +1,11 @@
+const clickSound = document.getElementById("click-sound");
+
+function playClick() {
+  if (!clickSound) return;
+  clickSound.currentTime = 0;
+  clickSound.play().catch(() => {});
+}
+
 const container = document.getElementById('content-container');
 
 document.addEventListener("click", function (e) {
