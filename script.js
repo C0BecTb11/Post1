@@ -1,3 +1,5 @@
+console.log("JS загружен");
+
 function playClick() {
   const clickSound = document.getElementById("click-sound");
   if (!clickSound) return;
