@@ -1,5 +1,10 @@
-const clickSound = document.getElementById("click-sound");
+function playClick() {
+  const clickSound = document.getElementById("click-sound");
+  if (!clickSound) return;
 
+  clickSound.currentTime = 0;
+  clickSound.play().catch(() => {});
+}
 function playClick() {
   if (!clickSound) return;
   clickSound.currentTime = 0;
