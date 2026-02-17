@@ -107,6 +107,19 @@ document.addEventListener("click", function (e) {
       })
       .then(html => {
         if (html) ruleContainer.innerHTML = html;
+
+          // автоскролл
+          setTimeout(() => {
+            const rect = ruleContainer.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const targetY = rect.top + scrollTop - 20;
+
+            window.scrollTo({
+              top: targetY,
+              behavior: "smooth"
+            });
+          }, 150);
+        }
       })
       .catch(err => {
         ruleContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
