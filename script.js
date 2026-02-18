@@ -83,50 +83,49 @@ document.addEventListener("click", function (e) {
     return;
   }
 
-  /* ===============================
-     3️⃣ Подразделы правил
-  =============================== */
+/* ===============================
+   3️⃣ Подразделы правил
+=============================== */
 
-  const ruleBtn = e.target.closest(".sub-rule-button");
-  if (ruleBtn) {
+const ruleBtn = e.target.closest(".sub-rule-button");
+if (ruleBtn) {
 
-    playClick();
+  playClick();
 
-    const ruleContainer = document.getElementById("sub-rules-container");
-    if (!ruleContainer) return;
+  const ruleContainer = document.getElementById("sub-rules-container");
+  if (!ruleContainer) return;
 
-    const target = ruleBtn.dataset.target;
+  const target = ruleBtn.dataset.target;
 
-    fetch(`sections/rules-${target}.html`)
-      .then(res => {
-        if (!res.ok) {
-          ruleContainer.innerHTML = `<p>Контент пока не готов.</p>`;
-          return;
-        }
-        return res.text();
-      })
-      .then(html => {
-        if (html) ruleContainer.innerHTML = html;
+  fetch(`sections/rules-${target}.html`)
+    .then(res => {
+      if (!res.ok) {
+        ruleContainer.innerHTML = `<p>Контент пока не готов.</p>`;
+        return;
+      }
+      return res.text();
+    })
+    .then(html => {
+      if (html) {
+        ruleContainer.innerHTML = html;
 
-          // автоскролл
-          setTimeout(() => {
-            const rect = ruleContainer.getBoundingClientRect();
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const targetY = rect.top + scrollTop - 20;
+        // автоскролл
+        setTimeout(() => {
+          const rect = ruleContainer.getBoundingClientRect();
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const targetY = rect.top + scrollTop - 20;
 
-            window.scrollTo({
-              top: targetY,
-              behavior: "smooth"
-            });
-          }, 150);
-        }
-      })
-      .catch(err => {
-        ruleContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
-        console.error(err);
-      });
+          window.scrollTo({
+            top: targetY,
+            behavior: "smooth"
+          });
+        }, 150);
+      }
+    })
+    .catch(err => {
+      ruleContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
+      console.error(err);
+    });
 
-    return;
-  }
-
-});
+  return;
+}
