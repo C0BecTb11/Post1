@@ -316,3 +316,37 @@ function getDistance(touch1, touch2) {
   const dy = touch2.clientY - touch1.clientY;
   return Math.hypot(dx, dy);
 }
+
+/* ===============================
+   FACTION TERRITORY
+=============================== */
+
+function drawFactionTerritory() {
+
+  const overlay = document.getElementById("map-overlay");
+  if (!overlay) return;
+
+  overlay.innerHTML = "";
+
+  const points = [
+    [775, 100],
+    [816, 89],
+    [900, 34],
+    [882, 141],
+    [854, 164],
+    [804, 157],
+    [772, 131]
+  ];
+
+  const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+
+  const pointString = points.map(p => `${p[0]},${p[1]}`).join(" ");
+
+  polygon.setAttribute("points", pointString);
+
+  polygon.setAttribute("fill", "rgba(0, 102, 255, 0.35)");
+  polygon.setAttribute("stroke", "#0066ff");
+  polygon.setAttribute("stroke-width", "2");
+
+  overlay.appendChild(polygon);
+}
