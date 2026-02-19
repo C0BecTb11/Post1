@@ -291,3 +291,27 @@ function handleTouchMove(e) {
 function handleTouchEnd() {
   isDragging = false;
 }
+
+/* ===============================
+   MAP CLICK COORDINATES
+=============================== */
+
+function initMapClick() {
+
+  const wrapper = document.querySelector(".map-wrapper");
+  const map = getMap();
+  const coordBox = document.getElementById("map-coordinates");
+
+  if (!wrapper || !map || !coordBox) return;
+
+  wrapper.addEventListener("click", function (e) {
+
+    const rect = map.getBoundingClientRect();
+
+    const x = Math.round((e.clientX - rect.left) / scale);
+    const y = Math.round((e.clientY - rect.top) / scale);
+
+    coordBox.innerText = `X: ${x} | Y: ${y}`;
+
+  });
+}
