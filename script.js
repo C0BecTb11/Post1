@@ -226,12 +226,6 @@ function centerMap() {
   map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
 }
 
-document.addEventListener("click", function () {
-  setTimeout(centerMap, 200);
-  setTimeout(initMapTouch, 100);
-  setTimeout(initMapClick, 100);
-});
-
 /* ===============================
    MAP TOUCH (FIXED SCROLL)
 =============================== */
@@ -317,3 +311,94 @@ function initMapClick() {
 
   });
 }
+
+/* ===============================
+   MAP PINCH ZOOM FIXED
+=============================== */
+
+function initMapTouch() {
+
+  const wrapper = document.querySelector(".map-wrapper");
+  const map = getMap();
+  if (!wrapper || !map) return;
+
+  let initialDistance = null;
+
+  wrapper.addEventListener("touchstart", function(e) {
+
+    if (e.touches.length === 2) {
+      initialDistance = getDistance(e.touches[0], e.touches[1]);
+      startScale = scale;
+    }
+
+    if (e.touches.length === 1) {
+      isDragging = true;
+      startX = e.touches[0].clientX - posX;
+      startY = e.touches[0].clientY - posY;
+    }
+
+  }, { passive: false });
+
+
+  wrapper.addEventListener("touchmove", function(e) {
+
+    const map = getMap();
+    if (!map) return;
+
+    if (e.touches.length === 2 && initialDistance) {
+
+      e.preventDefault();
+
+      const currentDistance = getDistance(e.touches[0], e.touches[1]);
+      scale = startScale * (currentDistance / initialDistance);
+
+      scale = Math.min(Math.max(scale, 1), 5);
+
+      limitPosition();
+      updateGrid();
+
+    }
+
+    if (e.touches.length === 1 && isDragging) {
+
+      e.preventDefault();
+
+      posX = e.touches[0].clientX - startX;
+      posY = e.touches[0].clientY - startY;
+
+      limitPosition();
+    }
+
+    map.style.transform =
+      `translate(${posX}px, ${posY}px) scale(${scale})`;
+
+  }, { passive: false });
+
+  wrapper.addEventListener("touchend", function() {
+    isDragging = false;
+    initialDistance = null;
+  });
+
+}
+
+/* ===============================
+   GRID LOD SYSTEM
+=============================== */
+
+function updateGrid() {
+
+  const grid = document.querySelector(".map-grid");
+  if (!grid) return;
+
+  let size = 30;
+
+  if (scale >= 2) {
+    size = 15;   // деление на 4
+  }
+
+  if (scale >= 3.5) {
+    size = 7.5;  // ещё на 4
+  }
+
+  grid.style.backgroundSize = `${size}px ${size}px`;
+  }
