@@ -330,7 +330,11 @@ function drawFactionTerritory() {
 
   layer.innerHTML = "";
 
-  const points = [
+  /* ===============================
+     1️⃣ СИНЯЯ ТЕРРИТОРИЯ
+  =============================== */
+
+  const bluePoints = [
     [775, 100],
     [816, 89],
     [900, 34],
@@ -340,16 +344,49 @@ function drawFactionTerritory() {
     [772, 131]
   ];
 
-  const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+  const bluePolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
 
-  const pointString = points.map(p => `${p[0]},${p[1]}`).join(" ");
+  bluePolygon.setAttribute(
+    "points",
+    bluePoints.map(p => `${p[0]},${p[1]}`).join(" ")
+  );
 
-  polygon.setAttribute("points", pointString);
-  polygon.setAttribute("fill", "rgba(0, 102, 255, 0.35)");
-  polygon.setAttribute("stroke", "#0066ff");
-  polygon.setAttribute("stroke-width", "2");
+  bluePolygon.setAttribute("fill", "rgba(0, 102, 255, 0.35)");
+  bluePolygon.setAttribute("stroke", "#0066ff");
+  bluePolygon.setAttribute("stroke-width", "2");
 
-  layer.appendChild(polygon);
+  layer.appendChild(bluePolygon);
+
+
+  /* ===============================
+     2️⃣ КРАСНАЯ ТЕРРИТОРИЯ
+  =============================== */
+
+  const redPoints = [
+    [773, 142],
+    [492, 379],
+    [491, 435],
+    [617, 493],
+    [797, 536],
+    [1019, 626],
+    [1021, 347],
+    [896, 320],
+    [831, 233],
+    [842, 168]
+  ];
+
+  const redPolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+
+  redPolygon.setAttribute(
+    "points",
+    redPoints.map(p => `${p[0]},${p[1]}`).join(" ")
+  );
+
+  redPolygon.setAttribute("fill", "rgba(255, 0, 0, 0.35)");
+  redPolygon.setAttribute("stroke", "#ff0000");
+  redPolygon.setAttribute("stroke-width", "2");
+
+  layer.appendChild(redPolygon);
 }
 
 /* ===============================
