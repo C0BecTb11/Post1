@@ -284,3 +284,24 @@ document.addEventListener("click", function () {
   setTimeout(centerMap, 200);
 });
 
+/* ===============================
+   MAP COORDINATES
+=============================== */
+
+document.addEventListener("touchmove", function (e) {
+
+  const map = getMap();
+  const coordBox = document.getElementById("map-coordinates");
+  if (!map || !coordBox) return;
+
+  if (e.touches.length === 1) {
+
+    const rect = map.getBoundingClientRect();
+
+    const x = Math.round((e.touches[0].clientX - rect.left) / scale);
+    const y = Math.round((e.touches[0].clientY - rect.top) / scale);
+
+    coordBox.innerText = `X: ${x} | Y: ${y}`;
+  }
+
+});
