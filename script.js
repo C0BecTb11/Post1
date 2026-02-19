@@ -159,3 +159,75 @@ document.addEventListener("wheel", function (e) {
   mapContainer.style.transform = `scale(${currentScale})`;
 
 }, { passive: false });
+
+/* ===============================
+   MAP TOUCH CONTROL (MOBILE)
+=============================== */
+
+let scale = 1;
+let startDistance = 0;
+let startScale = 1;
+let posX = 0;
+let posY = 0;
+let startX = 0;
+let startY = 0;
+let isDragging = false;
+
+document.addEventListener("touchstart", function (e) {
+
+  const map = document.getElementById("map-container");
+  if (!map) return;
+
+  if (e.touches.length === 2) {
+    // pinch start
+    startDistance = getDistance(e.touches[0], e.touches[1]);
+    startScale = scale;
+  }
+
+  if (e.touches.length === 1) {
+    // drag start
+    isDragging = true;
+    startX = e.touches[0].clientX - posX;
+    startY = e.touches[0].clientY - posY;
+  }
+
+}, { passive: false });
+
+
+document.addEventListener("touchmove", function (e) {
+
+  const map = document.getElementById("map-container");
+  if (!map) return;
+
+  e.preventDefault();
+
+  if (e.touches.length === 2) {
+    // pinch zoom
+    const newDistance = getDistance(e.touches[0], e.touches[1]);
+    scale = startScale * (newDistance / startDistance);
+
+    scale = Math.min(Math.max(scale, 0.5), 4);
+
+    map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+  }
+
+  if (e.touches.length === 1 && isDragging) {
+    posX = e.touches[0].clientX - startX;
+    posY = e.touches[0].clientY - startY;
+
+    map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+  }
+
+}, { passive: false });
+
+
+document.addEventListener("touchend", function () {
+  isDragging = false;
+});
+
+
+function getDistance(touch1, touch2) {
+  const dx = touch1.clientX - touch2.clientX;
+  const dy = touch1.clientY - touch2.clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
