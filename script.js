@@ -202,60 +202,6 @@ function limitPosition() {
   posY = Math.max(minY, Math.min(0, posY));
 }
 
-document.addEventListener("touchstart", function (e) {
-
-  const map = getMap();
-  if (!map) return;
-
-  if (e.touches.length === 2) {
-    startDistance = getDistance(e.touches[0], e.touches[1]);
-    startScale = scale;
-  }
-
-  if (e.touches.length === 1) {
-    isDragging = true;
-    startX = e.touches[0].clientX - posX;
-    startY = e.touches[0].clientY - posY;
-  }
-
-}, { passive: false });
-
-document.addEventListener("touchmove", function (e) {
-
-  const map = getMap();
-  if (!map) return;
-
-  e.preventDefault();
-
-  if (e.touches.length === 2) {
-    const newDistance = getDistance(e.touches[0], e.touches[1]);
-    scale = startScale * (newDistance / startDistance);
-
-    scale = Math.min(Math.max(scale, 0.5), 4);
-    limitPosition();
-  }
-
-  if (e.touches.length === 1 && isDragging) {
-    posX = e.touches[0].clientX - startX;
-    posY = e.touches[0].clientY - startY;
-
-    limitPosition();
-  }
-
-  map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
-
-}, { passive: false });
-
-document.addEventListener("touchend", function () {
-  isDragging = false;
-});
-
-function getDistance(t1, t2) {
-  const dx = t1.clientX - t2.clientX;
-  const dy = t1.clientY - t2.clientY;
-  return Math.sqrt(dx * dx + dy * dy);
-}
-
 /* ===============================
    MAP AUTO CENTER
 =============================== */
@@ -285,23 +231,63 @@ document.addEventListener("click", function () {
 });
 
 /* ===============================
-   MAP COORDINATES
+   MAP TOUCH (FIXED SCROLL)
 =============================== */
 
-document.addEventListener("touchmove", function (e) {
+function initMapTouch() {
 
+  const wrapper = document.querySelector(".map-wrapper");
   const map = getMap();
-  const coordBox = document.getElementById("map-coordinates");
-  if (!map || !coordBox) return;
+  if (!wrapper || !map) return;
 
-  if (e.touches.length === 1) {
+  wrapper.addEventListener("touchstart", handleTouchStart, { passive: false });
+  wrapper.addEventListener("touchmove", handleTouchMove, { passive: false });
+  wrapper.addEventListener("touchend", handleTouchEnd);
+}
 
-    const rect = map.getBoundingClientRect();
+function handleTouchStart(e) {
 
-    const x = Math.round((e.touches[0].clientX - rect.left) / scale);
-    const y = Math.round((e.touches[0].clientY - rect.top) / scale);
-
-    coordBox.innerText = `X: ${x} | Y: ${y}`;
+  if (e.touches.length === 2) {
+    startDistance = getDistance(e.touches[0], e.touches[1]);
+    startScale = scale;
   }
 
-});
+  if (e.touches.length === 1) {
+    isDragging = true;
+    startX = e.touches[0].clientX - posX;
+    startY = e.touches[0].clientY - posY;
+  }
+}
+
+function handleTouchMove(e) {
+
+  const map = getMap();
+  if (!map) return;
+
+  if (e.touches.length === 2) {
+
+    e.preventDefault();
+
+    const newDistance = getDistance(e.touches[0], e.touches[1]);
+    scale = startScale * (newDistance / startDistance);
+    scale = Math.min(Math.max(scale, 0.5), 4);
+
+    limitPosition();
+  }
+
+  if (e.touches.length === 1 && isDragging) {
+
+    e.preventDefault();
+
+    posX = e.touches[0].clientX - startX;
+    posY = e.touches[0].clientY - startY;
+
+    limitPosition();
+  }
+
+  map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+}
+
+function handleTouchEnd() {
+  isDragging = false;
+}
