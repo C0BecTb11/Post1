@@ -16,28 +16,37 @@ document.addEventListener("DOMContentLoaded", function () {
        1️⃣ Главная навигация
     =============================== */
 
-    const mainBtn = e.target.closest(".nav-button.main-nav");
-    if (mainBtn) {
+const mainBtn = e.target.closest(".nav-button.main-nav");
+if (mainBtn) {
 
-      playClick();
+  playClick();
 
-      const container = document.getElementById("content-container");
-      if (!container) return;
+  const container = document.getElementById('content-container');
+  if (!container) return;
 
-      const target = mainBtn.dataset.target;
+  const target = mainBtn.dataset.target;
 
-      fetch(`sections/${target}.html`)
-        .then(res => res.text())
-        .then(html => {
-          container.innerHTML = html;
-        })
-        .catch(err => {
-          container.innerHTML = `<p>Ошибка загрузки раздела.</p>`;
-          console.error(err);
-        });
+  fetch(`sections/${target}.html`)
+    .then(res => res.text())
+    .then(html => {
+      container.innerHTML = html;
 
-      return;
-    }
+      // 🔹 Если это карта — инициализируем её
+      if (target === "map") {
+        setTimeout(() => {
+          centerMap();
+          initMapTouch();
+          initMapClick();
+        }, 300);
+      }
+
+    })
+    .catch(err => {
+      container.innerHTML = `<p>Ошибка загрузки раздела.</p>`;
+      console.error(err);
+    });
+
+  return;
 
     /* ===============================
        2️⃣ Подразделы FAQ
@@ -139,24 +148,26 @@ document.addEventListener("DOMContentLoaded", function () {
    MAP ZOOM
 =============================== */
 
-let currentScale = 1;
-
 document.addEventListener("wheel", function (e) {
 
-  const mapContainer = document.getElementById("map-container");
-  if (!mapContainer) return;
+  const map = getMap();
+  if (!map) return;
 
   e.preventDefault();
 
   if (e.deltaY < 0) {
-    currentScale += 0.1;
+    scale += 0.1;
   } else {
-    currentScale -= 0.1;
+    scale -= 0.1;
   }
 
-  currentScale = Math.min(Math.max(currentScale, 0.5), 3);
+  scale = Math.min(Math.max(scale, 1), 5);
 
-  mapContainer.style.transform = `scale(${currentScale})`;
+  limitPosition();
+  updateGrid();
+
+  map.style.transform =
+    `translate(${posX}px, ${posY}px) scale(${scale})`;
 
 }, { passive: false });
 
@@ -232,17 +243,6 @@ function centerMap() {
 /* ===============================
    MAP TOUCH (FIXED SCROLL)
 =============================== */
-
-function initMapTouch() {
-
-  const wrapper = document.querySelector(".map-wrapper");
-  const map = getMap();
-  if (!wrapper || !map) return;
-
-  wrapper.addEventListener("touchstart", handleTouchStart, { passive: false });
-  wrapper.addEventListener("touchmove", handleTouchMove, { passive: false });
-  wrapper.addEventListener("touchend", handleTouchEnd);
-}
 
 function handleTouchStart(e) {
 
