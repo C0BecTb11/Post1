@@ -1,15 +1,21 @@
-<div class="map-layers-panel">
-  <button class="layer-btn active" data-layer="clean">Чистый</button>
-  <button class="layer-btn" data-layer="political">Политический</button>
-  <button class="layer-btn" data-layer="icons">Иконки</button>
-</div>
-
 <div class="map-wrapper">
   <div class="map-container" id="map-container">
     
     <img src="images/map.png" class="map-image" draggable="false">
 
     <div class="map-grid"></div>
+
+    <div class="map-layers-panel">
+  <label class="layer-item">
+    <input type="checkbox" data-layer="political">
+    Политический
+  </label>
+
+  <label class="layer-item">
+    <input type="checkbox" data-layer="icons">
+    Иконки
+  </label>
+    </div>
 
 <svg id="map-overlay" class="map-overlay">
   <g id="layer-political"></g>
