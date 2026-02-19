@@ -1,32 +1,35 @@
 <div class="map-wrapper">
+
   <div class="map-container" id="map-container">
     
     <img src="images/map.png" class="map-image" draggable="false">
 
     <div class="map-grid"></div>
 
-    <div class="map-layers-panel">
-  <label class="layer-item">
-    <input type="checkbox" data-layer="political">
-    Политический
-  </label>
-
-  <label class="layer-item">
-    <input type="checkbox" data-layer="icons">
-    Иконки
-  </label>
-    </div>
-
-<svg id="map-overlay" class="map-overlay">
-  <g id="layer-political"></g>
-  <g id="layer-icons"></g>
-</svg>
+    <svg id="map-overlay" class="map-overlay">
+      <g id="layer-political"></g>
+      <g id="layer-icons"></g>
+    </svg>
 
     <div class="map-markers" id="map-markers">
       <!-- В будущем сюда будем вставлять маркеры -->
     </div>
 
   </div>
+
+  <!-- Панель слоёв ПЕРЕНЕСЕНА -->
+  <div class="map-layers-panel">
+    <label class="layer-item">
+      <input type="checkbox" data-layer="political">
+      Политический
+    </label>
+
+    <label class="layer-item">
+      <input type="checkbox" data-layer="icons">
+      Иконки
+    </label>
+  </div>
+
 </div>
 
 <div class="map-coordinates" id="map-coordinates">
