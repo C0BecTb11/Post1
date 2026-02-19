@@ -353,39 +353,34 @@ function drawFactionTerritory() {
 }
 
 /* ===============================
-   MAP LAYERS SYSTEM
+   MAP LAYERS SYSTEM (MULTI)
 =============================== */
 
 function initLayerControls() {
 
-  const buttons = document.querySelectorAll(".layer-btn");
+  const checkboxes = document.querySelectorAll(".map-layers-panel input");
+
   const political = document.getElementById("layer-political");
   const icons = document.getElementById("layer-icons");
 
-  if (!buttons.length) return;
+  if (!checkboxes.length) return;
 
-  buttons.forEach(btn => {
+  // по умолчанию всё скрыто
+  if (political) political.style.display = "none";
+  if (icons) icons.style.display = "none";
 
-    btn.addEventListener("click", function() {
+  checkboxes.forEach(box => {
 
-      buttons.forEach(b => b.classList.remove("active"));
-      this.classList.add("active");
+    box.addEventListener("change", function() {
 
       const layer = this.dataset.layer;
 
-      if (layer === "clean") {
-        political.style.display = "none";
-        icons.style.display = "none";
+      if (layer === "political" && political) {
+        political.style.display = this.checked ? "block" : "none";
       }
 
-      if (layer === "political") {
-        political.style.display = "block";
-        icons.style.display = "none";
-      }
-
-      if (layer === "icons") {
-        political.style.display = "none";
-        icons.style.display = "block";
+      if (layer === "icons" && icons) {
+        icons.style.display = this.checked ? "block" : "none";
       }
 
     });
