@@ -224,6 +224,9 @@ function centerMap() {
   posY = (wrapperHeight - mapHeight) / 2;
 
   map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+
+  updateGrid();
+  
 }
 
 /* ===============================
