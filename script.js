@@ -37,6 +37,7 @@ if (target === "map") {
     initMapTouch();
     initMapClick();
     drawFactionTerritory();
+    initLayerControls();
   }, 300);
 }
 
@@ -324,10 +325,10 @@ function getDistance(touch1, touch2) {
 
 function drawFactionTerritory() {
 
-  const overlay = document.getElementById("map-overlay");
-  if (!overlay) return;
+  const layer = document.getElementById("layer-political");
+  if (!layer) return;
 
-  overlay.innerHTML = "";
+  layer.innerHTML = "";
 
   const points = [
     [775, 100],
@@ -344,10 +345,51 @@ function drawFactionTerritory() {
   const pointString = points.map(p => `${p[0]},${p[1]}`).join(" ");
 
   polygon.setAttribute("points", pointString);
-
   polygon.setAttribute("fill", "rgba(0, 102, 255, 0.35)");
   polygon.setAttribute("stroke", "#0066ff");
   polygon.setAttribute("stroke-width", "2");
 
-  overlay.appendChild(polygon);
+  layer.appendChild(polygon);
+}
+
+/* ===============================
+   MAP LAYERS SYSTEM
+=============================== */
+
+function initLayerControls() {
+
+  const buttons = document.querySelectorAll(".layer-btn");
+  const political = document.getElementById("layer-political");
+  const icons = document.getElementById("layer-icons");
+
+  if (!buttons.length) return;
+
+  buttons.forEach(btn => {
+
+    btn.addEventListener("click", function() {
+
+      buttons.forEach(b => b.classList.remove("active"));
+      this.classList.add("active");
+
+      const layer = this.dataset.layer;
+
+      if (layer === "clean") {
+        political.style.display = "none";
+        icons.style.display = "none";
+      }
+
+      if (layer === "political") {
+        political.style.display = "block";
+        icons.style.display = "none";
+      }
+
+      if (layer === "icons") {
+        political.style.display = "none";
+        icons.style.display = "block";
+      }
+
+    });
+
+  });
+
 }
