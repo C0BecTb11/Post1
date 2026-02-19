@@ -241,15 +241,6 @@ h1 {
   pointer-events: none; /* чтобы не ломать клики */
 }
 
-.map-layers-panel {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  z-index: 1000;
-  display: flex;
-  gap: 10px;
-}
-
 .layer-btn {
   padding: 6px 12px;
   background: rgba(0,0,0,0.6);
@@ -266,11 +257,9 @@ h1 {
 
 .map-layers-panel {
   position: absolute;
-
   bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
-
   z-index: 1000;
 
   background: rgba(0, 0, 0, 0.65);
@@ -281,6 +270,9 @@ h1 {
   gap: 20px;
 
   backdrop-filter: blur(6px);
+
+  width: auto;
+  max-width: 90%;
 }
 
 .layer-item {
