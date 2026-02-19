@@ -227,7 +227,7 @@ function centerMap() {
 }
 
 document.addEventListener("click", function () {
-  setTimeout(centerMap, 200);
+  setTimeout(initMapTouch, 100);
 });
 
 /* ===============================
