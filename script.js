@@ -15,43 +15,42 @@ document.addEventListener("DOMContentLoaded", function () {
     /* ===============================
        1️⃣ Главная навигация
     =============================== */
+    const mainBtn = e.target.closest(".nav-button.main-nav");
+    if (mainBtn) {
 
-const mainBtn = e.target.closest(".nav-button.main-nav");
-if (mainBtn) {
+      playClick();
 
-  playClick();
+      const container = document.getElementById('content-container');
+      if (!container) return;
 
-  const container = document.getElementById('content-container');
-  if (!container) return;
+      const target = mainBtn.dataset.target;
 
-  const target = mainBtn.dataset.target;
+      fetch(`sections/${target}.html`)
+        .then(res => res.text())
+        .then(html => {
+          container.innerHTML = html;
 
-  fetch(`sections/${target}.html`)
-    .then(res => res.text())
-    .then(html => {
-      container.innerHTML = html;
+          // 🔹 Если это карта — инициализируем её
+          if (target === "map") {
+            setTimeout(() => {
+              centerMap();
+              initMapTouch();
+              initMapClick();
+            }, 300);
+          }
 
-      // 🔹 Если это карта — инициализируем её
-      if (target === "map") {
-        setTimeout(() => {
-          centerMap();
-          initMapTouch();
-          initMapClick();
-        }, 300);
-      }
+        })
+        .catch(err => {
+          container.innerHTML = `<p>Ошибка загрузки раздела.</p>`;
+          console.error(err);
+        });
 
-    })
-    .catch(err => {
-      container.innerHTML = `<p>Ошибка загрузки раздела.</p>`;
-      console.error(err);
-    });
-
-  return;
+      return;
+    }
 
     /* ===============================
        2️⃣ Подразделы FAQ
     =============================== */
-
     const faqBtn = e.target.closest(".sub-faq-button");
     if (faqBtn) {
 
@@ -97,7 +96,6 @@ if (mainBtn) {
     /* ===============================
        3️⃣ Подразделы правил
     =============================== */
-
     const ruleBtn = e.target.closest(".sub-rule-button");
     if (ruleBtn) {
 
@@ -145,36 +143,8 @@ if (mainBtn) {
 });
 
 /* ===============================
-   MAP ZOOM
-=============================== */
-
-document.addEventListener("wheel", function (e) {
-
-  const map = getMap();
-  if (!map) return;
-
-  e.preventDefault();
-
-  if (e.deltaY < 0) {
-    scale += 0.1;
-  } else {
-    scale -= 0.1;
-  }
-
-  scale = Math.min(Math.max(scale, 1), 5);
-
-  limitPosition();
-  updateGrid();
-
-  map.style.transform =
-    `translate(${posX}px, ${posY}px) scale(${scale})`;
-
-}, { passive: false });
-
-/* ===============================
-   MAP SYSTEM (MOBILE + LIMITS)
-=============================== */
-
+   MAP SYSTEM
+============================== */
 let scale = 1;
 let startDistance = 0;
 let startScale = 1;
@@ -195,7 +165,6 @@ function getWrapper() {
 }
 
 function limitPosition() {
-
   const map = getMap();
   const wrapper = getWrapper();
   if (!map || !wrapper) return;
@@ -215,10 +184,8 @@ function limitPosition() {
 
 /* ===============================
    MAP AUTO CENTER
-=============================== */
-
+============================== */
 function centerMap() {
-
   const map = getMap();
   const wrapper = getWrapper();
   if (!map || !wrapper) return;
@@ -237,171 +204,115 @@ function centerMap() {
   map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
 
   updateGrid();
-  
 }
 
 /* ===============================
-   MAP TOUCH (FIXED SCROLL)
-=============================== */
-
-function handleTouchStart(e) {
-
-  if (e.touches.length === 2) {
-    startDistance = getDistance(e.touches[0], e.touches[1]);
-    startScale = scale;
-  }
-
-  if (e.touches.length === 1) {
-    isDragging = true;
-    startX = e.touches[0].clientX - posX;
-    startY = e.touches[0].clientY - posY;
-  }
-}
-
-function handleTouchMove(e) {
-
+   MAP WHEEL ZOOM
+============================== */
+document.addEventListener("wheel", function (e) {
   const map = getMap();
   if (!map) return;
 
-  if (e.touches.length === 2) {
+  e.preventDefault();
 
-    e.preventDefault();
+  if (e.deltaY < 0) scale += 0.1;
+  else scale -= 0.1;
 
-    const newDistance = getDistance(e.touches[0], e.touches[1]);
-    scale = startScale * (newDistance / startDistance);
-    scale = Math.min(Math.max(scale, 0.5), 4);
+  scale = Math.min(Math.max(scale, 1), 5);
 
-    limitPosition();
-  }
-
-  if (e.touches.length === 1 && isDragging) {
-
-    e.preventDefault();
-
-    posX = e.touches[0].clientX - startX;
-    posY = e.touches[0].clientY - startY;
-
-    limitPosition();
-  }
+  limitPosition();
+  updateGrid();
 
   map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
-}
-
-function handleTouchEnd() {
-  isDragging = false;
-}
+}, { passive: false });
 
 /* ===============================
-   MAP CLICK COORDINATES
-=============================== */
-
-function initMapClick() {
-
-  const wrapper = document.querySelector(".map-wrapper");
-  const map = getMap();
-  const coordBox = document.getElementById("map-coordinates");
-
-  if (!wrapper || !map || !coordBox) return;
-
-  wrapper.addEventListener("click", function (e) {
-
-    const rect = map.getBoundingClientRect();
-
-    const x = Math.round((e.clientX - rect.left) / scale);
-    const y = Math.round((e.clientY - rect.top) / scale);
-
-    coordBox.innerText = `X: ${x} | Y: ${y}`;
-
-  });
-}
-
-/* ===============================
-   MAP PINCH ZOOM FIXED
-=============================== */
-
+   MAP TOUCH (PINCH + DRAG)
+============================== */
 function initMapTouch() {
-
-  const wrapper = document.querySelector(".map-wrapper");
+  const wrapper = getWrapper();
   const map = getMap();
   if (!wrapper || !map) return;
 
   let initialDistance = null;
 
   wrapper.addEventListener("touchstart", function(e) {
-
     if (e.touches.length === 2) {
       initialDistance = getDistance(e.touches[0], e.touches[1]);
       startScale = scale;
     }
-
     if (e.touches.length === 1) {
       isDragging = true;
       startX = e.touches[0].clientX - posX;
       startY = e.touches[0].clientY - posY;
     }
-
   }, { passive: false });
 
-
   wrapper.addEventListener("touchmove", function(e) {
-
     const map = getMap();
     if (!map) return;
 
     if (e.touches.length === 2 && initialDistance) {
-
       e.preventDefault();
-
       const currentDistance = getDistance(e.touches[0], e.touches[1]);
       scale = startScale * (currentDistance / initialDistance);
-
       scale = Math.min(Math.max(scale, 1), 5);
-
       limitPosition();
       updateGrid();
-
     }
 
     if (e.touches.length === 1 && isDragging) {
-
       e.preventDefault();
-
       posX = e.touches[0].clientX - startX;
       posY = e.touches[0].clientY - startY;
-
       limitPosition();
     }
 
-    map.style.transform =
-      `translate(${posX}px, ${posY}px) scale(${scale})`;
-
+    map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
   }, { passive: false });
 
   wrapper.addEventListener("touchend", function() {
     isDragging = false;
     initialDistance = null;
   });
+}
 
+/* ===============================
+   MAP CLICK COORDINATES
+============================== */
+function initMapClick() {
+  const wrapper = getWrapper();
+  const map = getMap();
+  const coordBox = document.getElementById("map-coordinates");
+  if (!wrapper || !map || !coordBox) return;
+
+  wrapper.addEventListener("click", function(e) {
+    const rect = map.getBoundingClientRect();
+    const x = Math.round((e.clientX - rect.left) / scale);
+    const y = Math.round((e.clientY - rect.top) / scale);
+    coordBox.innerText = `X: ${x} | Y: ${y}`;
+  });
 }
 
 /* ===============================
    GRID LOD SYSTEM
-=============================== */
-
+============================== */
 function updateGrid() {
-
   const grid = document.querySelector(".map-grid");
   if (!grid) return;
 
   let size = 30;
-
-  if (scale >= 2) {
-    size = 15;   // деление на 4
-  }
-
-  if (scale >= 3.5) {
-    size = 7.5;  // ещё на 4
-  }
+  if (scale >= 2) size = 15;   // деление на 4
+  if (scale >= 3.5) size = 7.5; // ещё на 4
 
   grid.style.backgroundSize = `${size}px ${size}px`;
-  }
+}
+
+/* ===============================
+   UTILS
+============================== */
+function getDistance(touch1, touch2) {
+  const dx = touch2.clientX - touch1.clientX;
+  const dy = touch2.clientY - touch1.clientY;
+  return Math.hypot(dx, dy);
+}
