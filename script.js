@@ -387,6 +387,34 @@ function drawFactionTerritory() {
   redPolygon.setAttribute("stroke-width", "2");
 
   layer.appendChild(redPolygon);
+
+  /* ===============================
+   3️⃣ ЖЁЛТАЯ ТЕРРИТОРИЯ
+=============================== */
+
+const yellowPoints = [
+  [317, 693],
+  [270, 723],
+  [229, 793],
+  [259, 848],
+  [347, 941],
+  [479, 822],
+  [449, 724]
+];
+
+const yellowPolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+
+yellowPolygon.setAttribute(
+  "points",
+  yellowPoints.map(p => `${p[0]},${p[1]}`).join(" ")
+);
+
+yellowPolygon.setAttribute("fill", "rgba(255, 200, 0, 0.35)");
+yellowPolygon.setAttribute("stroke", "#ffc800");
+yellowPolygon.setAttribute("stroke-width", "2");
+
+layer.appendChild(yellowPolygon);
+  
 }
 
 /* ===============================
