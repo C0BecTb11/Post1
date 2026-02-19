@@ -227,3 +227,15 @@ h1 {
 .map-marker:hover {
   transform: translate(-50%, -50%) scale(1.1);
 }
+
+.map-coordinates {
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+  background: rgba(0,0,0,0.7);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #fff;
+  z-index: 10;
+}
