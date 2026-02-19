@@ -1,68 +1,71 @@
-console.log("JS загружен");
+document.addEventListener("DOMContentLoaded", function () {
 
-function playClick() {
-  const clickSound = document.getElementById("click-sound");
-  if (!clickSound) return;
+  console.log("JS загружен");
 
-  clickSound.currentTime = 0;
-  clickSound.play().catch(() => {});
-}
+  function playClick() {
+    const clickSound = document.getElementById("click-sound");
+    if (!clickSound) return;
 
-const container = document.getElementById('content-container');
-
-document.addEventListener("click", function (e) {
-
-  /* ===============================
-     1️⃣ Главная навигация
-  =============================== */
-
-  const mainBtn = e.target.closest(".nav-button.main-nav");
-  if (mainBtn) {
-
-    playClick();
-
-    const target = mainBtn.dataset.target;
-
-    fetch(`sections/${target}.html`)
-      .then(res => res.text())
-      .then(html => {
-        container.innerHTML = html;
-      })
-      .catch(err => {
-        container.innerHTML = `<p>Ошибка загрузки раздела.</p>`;
-        console.error(err);
-      });
-
-    return;
+    clickSound.currentTime = 0;
+    clickSound.play().catch(() => {});
   }
 
-  /* ===============================
-     2️⃣ Подразделы FAQ
-  =============================== */
+  document.addEventListener("click", function (e) {
 
-  const faqBtn = e.target.closest(".sub-faq-button");
-  if (faqBtn) {
+    /* ===============================
+       1️⃣ Главная навигация
+    =============================== */
 
-    playClick();
+    const mainBtn = e.target.closest(".nav-button.main-nav");
+    if (mainBtn) {
 
-    const faqContainer = document.getElementById("sub-faq-container");
-    if (!faqContainer) return;
+      playClick();
 
-    const target = faqBtn.dataset.target;
+      const container = document.getElementById("content-container");
+      if (!container) return;
 
-    fetch(`sections/faq-${target}.html`)
-      .then(res => {
-        if (!res.ok) {
-          faqContainer.innerHTML = `<p>Контент пока не готов.</p>`;
-          return;
-        }
-        return res.text();
-      })
-      .then(html => {
-        if (html) {
+      const target = mainBtn.dataset.target;
+
+      fetch(`sections/${target}.html`)
+        .then(res => res.text())
+        .then(html => {
+          container.innerHTML = html;
+        })
+        .catch(err => {
+          container.innerHTML = `<p>Ошибка загрузки раздела.</p>`;
+          console.error(err);
+        });
+
+      return;
+    }
+
+    /* ===============================
+       2️⃣ Подразделы FAQ
+    =============================== */
+
+    const faqBtn = e.target.closest(".sub-faq-button");
+    if (faqBtn) {
+
+      playClick();
+
+      const faqContainer = document.getElementById("sub-faq-container");
+      if (!faqContainer) return;
+
+      const target = faqBtn.dataset.target;
+
+      fetch(`sections/faq-${target}.html`)
+        .then(res => {
+          if (!res.ok) {
+            faqContainer.innerHTML = `<p>Контент пока не готов.</p>`;
+            return null;
+          }
+          return res.text();
+        })
+        .then(html => {
+          if (!html) return;
+
           faqContainer.innerHTML = html;
 
-          // автоскролл
           setTimeout(() => {
             const rect = faqContainer.getBoundingClientRect();
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -72,60 +75,62 @@ document.addEventListener("click", function (e) {
               top: targetY,
               behavior: "smooth"
             });
-          }, 150);
-        }
-      })
-      .catch(err => {
-        faqContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
-        console.error(err);
-      });
+          }, 100);
+        })
+        .catch(err => {
+          faqContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
+          console.error(err);
+        });
 
-    return;
-  }
+      return;
+    }
 
-/* ===============================
-   3️⃣ Подразделы правил
-=============================== */
+    /* ===============================
+       3️⃣ Подразделы правил
+    =============================== */
 
-const ruleBtn = e.target.closest(".sub-rule-button");
-if (ruleBtn) {
+    const ruleBtn = e.target.closest(".sub-rule-button");
+    if (ruleBtn) {
 
-  playClick();
+      playClick();
 
-  const ruleContainer = document.getElementById("sub-rules-container");
-  if (!ruleContainer) return;
+      const ruleContainer = document.getElementById("sub-rules-container");
+      if (!ruleContainer) return;
 
-  const target = ruleBtn.dataset.target;
+      const target = ruleBtn.dataset.target;
 
-  fetch(`sections/rules-${target}.html`)
-    .then(res => {
-      if (!res.ok) {
-        ruleContainer.innerHTML = `<p>Контент пока не готов.</p>`;
-        return;
-      }
-      return res.text();
-    })
-    .then(html => {
-      if (html) {
-        ruleContainer.innerHTML = html;
+      fetch(`sections/rules-${target}.html`)
+        .then(res => {
+          if (!res.ok) {
+            ruleContainer.innerHTML = `<p>Контент пока не готов.</p>`;
+            return null;
+          }
+          return res.text();
+        })
+        .then(html => {
+          if (!html) return;
 
-        // автоскролл
-        setTimeout(() => {
-          const rect = ruleContainer.getBoundingClientRect();
-          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          const targetY = rect.top + scrollTop - 20;
+          ruleContainer.innerHTML = html;
 
-          window.scrollTo({
-            top: targetY,
-            behavior: "smooth"
-          });
-        }, 150);
-      }
-    })
-    .catch(err => {
-      ruleContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
-      console.error(err);
-    });
+          setTimeout(() => {
+            const rect = ruleContainer.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const targetY = rect.top + scrollTop - 20;
 
-  return;
-}
+            window.scrollTo({
+              top: targetY,
+              behavior: "smooth"
+            });
+          }, 100);
+        })
+        .catch(err => {
+          ruleContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
+          console.error(err);
+        });
+
+      return;
+    }
+
+  });
+
+});
