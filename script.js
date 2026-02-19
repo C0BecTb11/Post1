@@ -134,3 +134,28 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
+
+/* ===============================
+   MAP ZOOM
+=============================== */
+
+let currentScale = 1;
+
+document.addEventListener("wheel", function (e) {
+
+  const mapContainer = document.getElementById("map-container");
+  if (!mapContainer) return;
+
+  e.preventDefault();
+
+  if (e.deltaY < 0) {
+    currentScale += 0.1;
+  } else {
+    currentScale -= 0.1;
+  }
+
+  currentScale = Math.min(Math.max(currentScale, 0.5), 3);
+
+  mapContainer.style.transform = `scale(${currentScale})`;
+
+}, { passive: false });
