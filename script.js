@@ -161,31 +161,58 @@ document.addEventListener("wheel", function (e) {
 }, { passive: false });
 
 /* ===============================
-   MAP TOUCH CONTROL (MOBILE)
+   MAP SYSTEM (MOBILE + LIMITS)
 =============================== */
 
 let scale = 1;
 let startDistance = 0;
 let startScale = 1;
+
 let posX = 0;
 let posY = 0;
 let startX = 0;
 let startY = 0;
+
 let isDragging = false;
+
+function getMap() {
+  return document.getElementById("map-container");
+}
+
+function getWrapper() {
+  return document.querySelector(".map-wrapper");
+}
+
+function limitPosition() {
+
+  const map = getMap();
+  const wrapper = getWrapper();
+  if (!map || !wrapper) return;
+
+  const mapWidth = map.offsetWidth * scale;
+  const mapHeight = map.offsetHeight * scale;
+
+  const wrapperWidth = wrapper.offsetWidth;
+  const wrapperHeight = wrapper.offsetHeight;
+
+  const minX = Math.min(0, wrapperWidth - mapWidth);
+  const minY = Math.min(0, wrapperHeight - mapHeight);
+
+  posX = Math.max(minX, Math.min(0, posX));
+  posY = Math.max(minY, Math.min(0, posY));
+}
 
 document.addEventListener("touchstart", function (e) {
 
-  const map = document.getElementById("map-container");
+  const map = getMap();
   if (!map) return;
 
   if (e.touches.length === 2) {
-    // pinch start
     startDistance = getDistance(e.touches[0], e.touches[1]);
     startScale = scale;
   }
 
   if (e.touches.length === 1) {
-    // drag start
     isDragging = true;
     startX = e.touches[0].clientX - posX;
     startY = e.touches[0].clientY - posY;
@@ -193,41 +220,67 @@ document.addEventListener("touchstart", function (e) {
 
 }, { passive: false });
 
-
 document.addEventListener("touchmove", function (e) {
 
-  const map = document.getElementById("map-container");
+  const map = getMap();
   if (!map) return;
 
   e.preventDefault();
 
   if (e.touches.length === 2) {
-    // pinch zoom
     const newDistance = getDistance(e.touches[0], e.touches[1]);
     scale = startScale * (newDistance / startDistance);
 
     scale = Math.min(Math.max(scale, 0.5), 4);
-
-    map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+    limitPosition();
   }
 
   if (e.touches.length === 1 && isDragging) {
     posX = e.touches[0].clientX - startX;
     posY = e.touches[0].clientY - startY;
 
-    map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+    limitPosition();
   }
 
-}, { passive: false });
+  map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
 
+}, { passive: false });
 
 document.addEventListener("touchend", function () {
   isDragging = false;
 });
 
-
-function getDistance(touch1, touch2) {
-  const dx = touch1.clientX - touch2.clientX;
-  const dy = touch1.clientY - touch2.clientY;
+function getDistance(t1, t2) {
+  const dx = t1.clientX - t2.clientX;
+  const dy = t1.clientY - t2.clientY;
   return Math.sqrt(dx * dx + dy * dy);
 }
+
+/* ===============================
+   MAP AUTO CENTER
+=============================== */
+
+function centerMap() {
+
+  const map = getMap();
+  const wrapper = getWrapper();
+  if (!map || !wrapper) return;
+
+  scale = 1;
+
+  const mapWidth = map.offsetWidth;
+  const mapHeight = map.offsetHeight;
+
+  const wrapperWidth = wrapper.offsetWidth;
+  const wrapperHeight = wrapper.offsetHeight;
+
+  posX = (wrapperWidth - mapWidth) / 2;
+  posY = (wrapperHeight - mapHeight) / 2;
+
+  map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+}
+
+document.addEventListener("click", function () {
+  setTimeout(centerMap, 200);
+});
+
