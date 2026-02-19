@@ -163,6 +163,7 @@ h1 {
   position: relative;
   background: #0a0a0f;
   border-radius: 12px;
+  touch-action: none;
 }
 
 .map-container {
