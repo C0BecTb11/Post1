@@ -240,3 +240,26 @@ h1 {
   height: 100%;
   pointer-events: none; /* чтобы не ломать клики */
 }
+
+.map-layers-panel {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+}
+
+.layer-btn {
+  padding: 6px 12px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: 1px solid #444;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.layer-btn.active {
+  background: #0066ff;
+  border-color: #0066ff;
+}
