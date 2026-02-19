@@ -151,3 +151,78 @@ h1 {
     transform: translateY(0);
   }
 }
+
+/* ===============================
+   MAP SYSTEM
+=============================== */
+
+.map-wrapper {
+  width: 100%;
+  height: 80vh;
+  overflow: hidden;
+  position: relative;
+  background: #0a0a0f;
+  border-radius: 12px;
+}
+
+.map-container {
+  position: relative;
+  width: fit-content;
+  transform-origin: top left;
+  transition: transform 0.2s ease;
+}
+
+.map-image {
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Сетка 10x10 px */
+.map-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      rgba(255,255,255,0.08) 0px,
+      rgba(255,255,255,0.08) 1px,
+      transparent 1px,
+      transparent 10px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.08) 0px,
+      rgba(255,255,255,0.08) 1px,
+      transparent 1px,
+      transparent 10px
+    );
+}
+
+.map-markers {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Маркер */
+.map-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: #ff006e;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.map-marker:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
