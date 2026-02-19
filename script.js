@@ -31,13 +31,14 @@ document.addEventListener("DOMContentLoaded", function () {
           container.innerHTML = html;
 
           // 🔹 Если это карта — инициализируем её
-          if (target === "map") {
-            setTimeout(() => {
-              centerMap();
-              initMapTouch();
-              initMapClick();
-            }, 300);
-          }
+if (target === "map") {
+  setTimeout(() => {
+    centerMap();
+    initMapTouch();
+    initMapClick();
+    drawFactionTerritory();
+  }, 300);
+}
 
         })
         .catch(err => {
