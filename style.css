@@ -82,3 +82,72 @@ h1 {
   color: #ff4d4d;
   font-weight: 600;
 }
+
+/* ===============================
+   БАЗОВЫЕ КАРТОЧКИ
+=============================== */
+
+.info-block {
+  background: rgba(20, 20, 25, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 4px solid #3a86ff;
+  padding: 18px 20px;
+  margin: 16px 0;
+  border-radius: 10px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: fadeSlide 0.4s ease forwards;
+  opacity: 0;
+}
+
+.info-block:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+
+.info-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.info-text {
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Фракции */
+.info-faction {
+  border-left-color: #ff006e;
+}
+
+/* Локации */
+.info-location {
+  border-left-color: #06d6a0;
+}
+
+/* Важная информация */
+.info-important {
+  border-left-color: #ffbe0b;
+}
+
+/* Закон / правила */
+.info-law {
+  border-left-color: #8338ec;
+}
+
+/* Опасная зона */
+.info-danger {
+  border-left-color: #e63946;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
