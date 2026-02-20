@@ -450,20 +450,6 @@ function initLayerControls() {
   
 /* Слои */
 
-document.addEventListener("change", function(e) {
-
-  const checkbox = e.target.closest(".map-layers-panel input");
-  if (!checkbox) return;
-
-  const layerName = checkbox.dataset.layer;
-  const layer = document.getElementById("layer-" + layerName);
-
-  if (!layer) return;
-
-  layer.style.display = checkbox.checked ? "block" : "none";
-
-});
-
 function drawLocations() {
   const layer = document.getElementById("layer-locations");
   if (!layer) return;
