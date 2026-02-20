@@ -38,6 +38,7 @@ if (target === "map") {
     initMapClick();
     drawFactionTerritory();
     initLayerControls();
+    drawLocations();
   }, 300);
 }
 
