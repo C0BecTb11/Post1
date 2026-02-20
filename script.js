@@ -480,6 +480,9 @@ function drawLocations() {
 function openLocationModal(id) {
   if (!id) return;
 
+  const titleEl = document.getElementById("location-title");
+if (titleEl) titleEl.innerHTML = loc.title;
+  
   const modal = document.getElementById("location-modal");
   if (!modal) return;
 
