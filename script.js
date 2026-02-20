@@ -1,178 +1,85 @@
-document.addEventListener("DOMContentLoaded", function () {
+/* ==========================================================================
+   1. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И НАВИГАЦИЯ
+   ========================================================================== */
+let scale = 1;
+let posX = 0;
+let posY = 0;
+let isDragging = false;
 
-  console.log("JS загружен");
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("Система Лиорема запущена");
 
   function playClick() {
     const clickSound = document.getElementById("click-sound");
-    if (!clickSound) return;
-
-    clickSound.currentTime = 0;
-    clickSound.play().catch(() => {});
+    if (clickSound) {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+    }
   }
 
+  // Единый обработчик кликов для всего сайта
   document.addEventListener("click", function (e) {
-
-    /* ===============================
-       1️⃣ Главная навигация
-    =============================== */
+    
+    // А) Главные разделы (Лор, Карта и т.д.)
     const mainBtn = e.target.closest(".nav-button.main-nav");
     if (mainBtn) {
-
       playClick();
-
-      const container = document.getElementById('content-container');
-      if (!container) return;
-
       const target = mainBtn.dataset.target;
-
       fetch(`sections/${target}.html`)
         .then(res => res.text())
         .then(html => {
+          document.getElementById('content-container').innerHTML = html;
+          if (target === "map") {
+            // Инициализация карты после загрузки HTML
+            setTimeout(() => {
+              centerMap();
+              initMapTouch(); // Для телефонов
+              initMapMouse(); // Для ПК
+              initMapClick();
+              drawFactionTerritory();
+              initLayerControls();
+              drawLocations();
+            }, 100);
+          }
+        });
+      return;
+    }
+
+    // Б) Подразделы (FAQ и Правила)
+    // Теперь один код обрабатывает и правила, и FAQ
+    const subBtn = e.target.closest(".sub-faq-button, .sub-rule-button");
+    if (subBtn) {
+      playBtn(e); // если нужно звук
+      const isFaq = subBtn.classList.contains("sub-faq-button");
+      const containerId = isFaq ? "sub-faq-container" : "sub-rules-container";
+      const prefix = isFaq ? "faq" : "rules";
+      const container = document.getElementById(containerId);
+
+      fetch(`sections/${prefix}-${subBtn.dataset.target}.html`)
+        .then(res => res.ok ? res.text() : "<p>Контент в разработке...</p>")
+        .then(html => {
           container.innerHTML = html;
-
-          // 🔹 Если это карта — инициализируем её
-if (target === "map") {
-  setTimeout(() => {
-    centerMap();
-    initMapTouch();
-    initMapClick();
-    drawFactionTerritory();
-    initLayerControls();
-    drawLocations();
-  }, 300);
-}
-
-        })
-        .catch(err => {
-          container.innerHTML = `<p>Ошибка загрузки раздела.</p>`;
-          console.error(err);
+          container.scrollIntoView({ behavior: "smooth", block: "start" });
         });
-
-      return;
     }
-
-    /* ===============================
-       2️⃣ Подразделы FAQ
-    =============================== */
-    const faqBtn = e.target.closest(".sub-faq-button");
-    if (faqBtn) {
-
-      playClick();
-
-      const faqContainer = document.getElementById("sub-faq-container");
-      if (!faqContainer) return;
-
-      const target = faqBtn.dataset.target;
-
-      fetch(`sections/faq-${target}.html`)
-        .then(res => {
-          if (!res.ok) {
-            faqContainer.innerHTML = `<p>Контент пока не готов.</p>`;
-            return null;
-          }
-          return res.text();
-        })
-        .then(html => {
-          if (!html) return;
-
-          faqContainer.innerHTML = html;
-
-          setTimeout(() => {
-            const rect = faqContainer.getBoundingClientRect();
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const targetY = rect.top + scrollTop - 20;
-
-            window.scrollTo({
-              top: targetY,
-              behavior: "smooth"
-            });
-          }, 100);
-        })
-        .catch(err => {
-          faqContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
-          console.error(err);
-        });
-
-      return;
-    }
-
-    /* ===============================
-       3️⃣ Подразделы правил
-    =============================== */
-    const ruleBtn = e.target.closest(".sub-rule-button");
-    if (ruleBtn) {
-
-      playClick();
-
-      const ruleContainer = document.getElementById("sub-rules-container");
-      if (!ruleContainer) return;
-
-      const target = ruleBtn.dataset.target;
-
-      fetch(`sections/rules-${target}.html`)
-        .then(res => {
-          if (!res.ok) {
-            ruleContainer.innerHTML = `<p>Контент пока не готов.</p>`;
-            return null;
-          }
-          return res.text();
-        })
-        .then(html => {
-          if (!html) return;
-
-          ruleContainer.innerHTML = html;
-
-          setTimeout(() => {
-            const rect = ruleContainer.getBoundingClientRect();
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const targetY = rect.top + scrollTop - 20;
-
-            window.scrollTo({
-              top: targetY,
-              behavior: "smooth"
-            });
-          }, 100);
-        })
-        .catch(err => {
-          ruleContainer.innerHTML = `<p>Ошибка загрузки подраздела.</p>`;
-          console.error(err);
-        });
-
-      return;
-    }
-
   });
-
 });
 
-/* ===============================
-   MAP SYSTEM
-============================== */
-let scale = 1;
-let startDistance = 0;
-let startScale = 1;
+/* ==========================================================================
+   2. ДВИЖОК КАРТЫ (ЗУМ И ПЕРЕМЕЩЕНИЕ)
+   ========================================================================== */
+function getMap() { return document.getElementById("map-container"); }
+function getWrapper() { return document.querySelector(".map-wrapper"); }
 
-let posX = 0;
-let posY = 0;
-let startX = 0;
-let startY = 0;
-
-let isDragging = false;
-
-function getMap() {
-  return document.getElementById("map-container");
+function updateMapTransform() {
+  const map = getMap();
+  if (map) map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+  updateGrid();
 }
 
-function getWrapper() {
-  return document.querySelector(".map-wrapper");
-}
-
-/* ===============================
-       LIMIT POSITION
-============================== */
 function limitPosition() {
-  const map = document.getElementById("map-container");
-  const wrapper = document.querySelector(".map-wrapper");
+  const map = getMap();
+  const wrapper = getWrapper();
   if (!map || !wrapper) return;
 
   const wW = wrapper.offsetWidth;
@@ -180,157 +87,181 @@ function limitPosition() {
   const sW = map.offsetWidth * scale;
   const sH = map.offsetHeight * scale;
 
-  // Центрируем по X, если карта меньше экрана, иначе ограничиваем края
-  if (sW <= wW) {
-    posX = (wW - sW) / 2;
-  } else {
+  if (sW <= wW) posX = (wW - sW) / 2;
+  else {
     if (posX > 0) posX = 0;
     if (posX < wW - sW) posX = wW - sW;
   }
 
-  // Центрируем по Y
-  if (sH <= wH) {
-    posY = (wH - sH) / 2;
-  } else {
+  if (sH <= wH) posY = (wH - sH) / 2;
+  else {
     if (posY > 0) posY = 0;
     if (posY < wH - sH) posY = wH - sH;
   }
 }
 
-/* ===============================
-   MAP AUTO CENTER
-============================== */
-function centerMap() {
-  const map = getMap();
-  const wrapper = getWrapper();
-  if (!map || !wrapper) return;
-
-  scale = 1;
-
-  const mapWidth = map.offsetWidth;
-  const mapHeight = map.offsetHeight;
-
-  const wrapperWidth = wrapper.offsetWidth;
-  const wrapperHeight = wrapper.offsetHeight;
-
-  posX = (wrapperWidth - mapWidth) / 2;
-  posY = (wrapperHeight - mapHeight) / 2;
-
-  map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
-
-  updateGrid();
-}
-
-/* ===============================
-   MAP WHEEL ZOOM
-============================== */
+// Зум колесиком мыши (Исправлено: зум в точку курсора)
 document.addEventListener("wheel", function (e) {
-  const map = getMap();
-  if (!map) return;
+  const wrapper = getWrapper();
+  if (!wrapper || !wrapper.contains(e.target)) return;
 
   e.preventDefault();
+  const rect = wrapper.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
 
-  if (e.deltaY < 0) scale += 0.1;
-  else scale -= 0.1;
+  const mapX = (mouseX - posX) / scale;
+  const mapY = (mouseY - posY) / scale;
 
-  scale = Math.min(Math.max(scale, 1), 5);
+  const delta = e.deltaY > 0 ? -0.2 : 0.2;
+  const oldScale = scale;
+  scale = Math.min(Math.max(scale + delta, 1), 5);
+
+  posX = mouseX - mapX * scale;
+  posY = mouseY - mapY * scale;
 
   limitPosition();
-  updateGrid();
-
-  map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+  updateMapTransform();
 }, { passive: false });
 
-/* ===============================
-   TOUCH CONTROL (MOBILE)
-============================== */
-function initMapTouch() {
-  const wrapper = document.querySelector(".map-wrapper");
-  const map = document.getElementById("map-container");
-  if (!wrapper || !map) return;
+// Управление мышью (ПК)
+function initMapMouse() {
+  const wrapper = getWrapper();
+  let mStartX, mStartY;
 
-  let lastTouchX = 0;
-  let lastTouchY = 0;
-  let initialDist = 0;
+  wrapper.addEventListener("mousedown", (e) => {
+    if (e.button !== 0) return;
+    isDragging = true;
+    mStartX = e.clientX - posX;
+    mStartY = e.clientY - posY;
+    wrapper.style.cursor = "grabbing";
+  });
+
+  window.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    posX = e.clientX - mStartX;
+    posY = e.clientY - mStartY;
+    limitPosition();
+    updateMapTransform();
+  });
+
+  window.addEventListener("mouseup", () => {
+    isDragging = false;
+    if (wrapper) wrapper.style.cursor = "grab";
+  });
+}
+
+// Управление тачскрином (Смартфоны)
+function initMapTouch() {
+  const wrapper = getWrapper();
+  let lastDist = 0;
+  let tStartX, tStartY;
 
   wrapper.addEventListener("touchstart", (e) => {
     if (e.touches.length === 1) {
       isDragging = true;
-      lastTouchX = e.touches[0].clientX - posX;
-      lastTouchY = e.touches[0].clientY - posY;
+      tStartX = e.touches[0].clientX - posX;
+      tStartY = e.touches[0].clientY - posY;
     } else if (e.touches.length === 2) {
-      isDragging = false;
-      initialDist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      startScale = scale;
+      lastDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
     }
   }, { passive: false });
 
   wrapper.addEventListener("touchmove", (e) => {
-    e.preventDefault(); // Запрещаем стандартный скролл страницы при движении карты
-
+    e.preventDefault();
     if (e.touches.length === 1 && isDragging) {
-      posX = e.touches[0].clientX - lastTouchX;
-      posY = e.touches[0].clientY - lastTouchY;
+      posX = e.touches[0].clientX - tStartX;
+      posY = e.touches[0].clientY - tStartY;
     } else if (e.touches.length === 2) {
-      const dist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      const zoomFactor = dist / initialDist;
-      scale = Math.min(Math.max(startScale * zoomFactor, 1), 5);
+      const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      const zoom = dist / lastDist;
+      scale = Math.min(Math.max(scale * zoom, 1), 5);
+      lastDist = dist;
     }
-
     limitPosition();
-    map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
-    updateGrid();
+    updateMapTransform();
   }, { passive: false });
+}
 
-  wrapper.addEventListener("touchend", () => {
-    isDragging = false;
+/* ==========================================================================
+   3. ОТОБРАЖЕНИЕ ОБЪЕКТОВ И СЛОЕВ
+   ========================================================================== */
+function centerMap() {
+  scale = 1;
+  limitPosition(); 
+  updateMapTransform();
+}
+
+function updateGrid() {
+  const grid = document.querySelector(".map-grid");
+  if (!grid) return;
+  let size = 30 / scale; // Сетка масштабируется вместе с картой
+  grid.style.backgroundSize = `${size}px ${size}px`;
+}
+
+function initLayerControls() {
+  const checkboxes = document.querySelectorAll(".map-layers-panel input");
+  checkboxes.forEach(box => {
+    const layer = document.getElementById("layer-" + box.dataset.layer);
+    if (layer) layer.style.display = box.checked ? "block" : "none";
+    
+    box.addEventListener("change", function() {
+      const targetLayer = document.getElementById("layer-" + this.dataset.layer);
+      if (targetLayer) targetLayer.style.display = this.checked ? "block" : "none";
+    });
   });
 }
 
-/* ===============================
-   MAP CLICK COORDINATES
-============================== */
+function drawLocations() {
+  const layer = document.getElementById("layer-locations");
+  if (!layer || typeof LOCATIONS === "undefined") return;
+  layer.innerHTML = "";
+
+  LOCATIONS.forEach(loc => {
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", loc.coords.x);
+    circle.setAttribute("cy", loc.coords.y);
+    circle.setAttribute("r", loc.size / 2);
+    circle.setAttribute("fill", "#ffffff");
+    circle.setAttribute("stroke", "#000");
+    circle.style.cursor = "pointer";
+    circle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openLocationModal(loc.id);
+    });
+    layer.appendChild(circle);
+  });
+}
+
+/* ==========================================================================
+   4. МОДАЛЬНОЕ ОКНО И УТИЛИТЫ
+   ========================================================================== */
+function openLocationModal(id) {
+  const loc = LOCATIONS.find(l => l.id === id);
+  if (!loc) return;
+
+  document.getElementById("location-title").innerText = loc.title;
+  document.getElementById("location-owner").innerHTML = loc.owner;
+  document.getElementById("location-img").src = loc.img;
+  document.getElementById("location-description").innerHTML = loc.description;
+  document.getElementById("location-modal").classList.remove("hidden");
+}
+
+function closeLocationModal() {
+  document.getElementById("location-modal").classList.add("hidden");
+}
+
 function initMapClick() {
-  const wrapper = getWrapper();
   const map = getMap();
   const coordBox = document.getElementById("map-coordinates");
-  if (!wrapper || !map || !coordBox) return;
+  if (!map || !coordBox) return;
 
-  wrapper.addEventListener("click", function(e) {
+  map.addEventListener("click", function(e) {
     const rect = map.getBoundingClientRect();
     const x = Math.round((e.clientX - rect.left) / scale);
     const y = Math.round((e.clientY - rect.top) / scale);
     coordBox.innerText = `X: ${x} | Y: ${y}`;
   });
-}
-
-/* ===============================
-   GRID LOD SYSTEM
-============================== */
-function updateGrid() {
-  const grid = document.querySelector(".map-grid");
-  if (!grid) return;
-
-  let size = 30;
-  if (scale >= 2) size = 15;   // деление на 4
-  if (scale >= 3.5) size = 7.5; // ещё на 4
-
-  grid.style.backgroundSize = `${size}px ${size}px`;
-}
-
-/* ===============================
-   UTILS
-============================== */
-function getDistance(touch1, touch2) {
-  const dx = touch2.clientX - touch1.clientX;
-  const dy = touch2.clientY - touch1.clientY;
-  return Math.hypot(dx, dy);
 }
 
 /* ===============================
@@ -430,107 +361,3 @@ yellowPolygon.setAttribute("stroke-width", "2");
 layer.appendChild(yellowPolygon);
   
 }
-
-/* ===============================
-   MAP LAYERS SYSTEM (MULTI)
-=============================== */
-
-function initLayerControls() {
-  const checkboxes = document.querySelectorAll(".map-layers-panel input");
-
-  const political = document.getElementById("layer-political");
-  const icons = document.getElementById("layer-icons");
-  const locations = document.getElementById("layer-locations"); // добавляем слой
-  const history = document.getElementById("layer-history");
-
-  if (!checkboxes.length) return;
-
-  // по умолчанию всё скрыто
-  if (political) political.style.display = "none";
-  if (icons) icons.style.display = "none";
-  if (locations) locations.style.display = "none"; // <- скрываем
-  if (history) history.style.display = "none";
-
-  checkboxes.forEach(box => {
-    box.addEventListener("change", function() {
-      const layerName = this.dataset.layer;
-      const layer = document.getElementById("layer-" + layerName);
-      if (!layer) return;
-      layer.style.display = this.checked ? "block" : "none";
-    });
-  });
-}
-  
-/* Слои */
-
-function drawLocations() {
-  const layer = document.getElementById("layer-locations");
-  if (!layer) return;
-  if (typeof LOCATIONS === "undefined") return;
-
-  layer.innerHTML = "";
-
-  LOCATIONS.forEach(loc => {
-    const icon = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-
-    icon.setAttribute("cx", loc.coords.x);
-    icon.setAttribute("cy", loc.coords.y);
-    icon.setAttribute("r", loc.size / 2);
-    icon.setAttribute("fill", "#ffffff");
-    icon.setAttribute("stroke", "#000000");
-    icon.setAttribute("stroke-width", "1.5");
-    icon.style.cursor = "pointer";
-
-    icon.addEventListener("click", function(e) {
-      e.stopPropagation();
-      openLocationModal(loc.id);
-    });
-
-    layer.appendChild(icon);
-  });
-}
-
-function openLocationModal(id) {
-  if (!id) return;
-
-  // 1. Находим модалку в DOM
-  const modal = document.getElementById("location-modal");
-  if (!modal) return;
-
-  // 2. Ищем данные о локации в массиве LOCATIONS (из locations.js)
-  const loc = LOCATIONS.find(l => l.id === id);
-  if (!loc) {
-    console.error("Данные для локации не найдены:", id);
-    return;
-  }
-
-  // 3. Заполняем поля данными. Важно: ID должны совпадать с map.html
-  const titleEl = document.getElementById("location-title");
-  const ownerEl = document.getElementById("location-owner");
-  const imgEl = document.getElementById("location-img");
-  const descEl = document.getElementById("location-description");
-
-  if (titleEl) titleEl.innerHTML = loc.title;
-  if (ownerEl) ownerEl.innerHTML = loc.owner;
-  if (imgEl) imgEl.src = loc.img;
-  if (descEl) descEl.innerHTML = loc.description;
-
-  // 4. Показываем модалку, удаляя класс hidden
-  modal.classList.remove("hidden");
-}
-
-function closeLocationModal() {
-  const modal = document.getElementById("location-modal");
-  if (modal) {
-    modal.classList.add("hidden");
-  }
-}
-
-document.addEventListener("click", function(e) {
-  const modal = document.getElementById("location-modal");
-  if (!modal || modal.classList.contains("hidden")) return;
-
-  if (e.target === modal) {
-    closeLocationModal();
-  }
-});
