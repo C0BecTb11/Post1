@@ -353,3 +353,7 @@ h1 {
   border-radius: 6px;
   cursor: pointer;
 }
+
+.hidden { 
+  display: none !important;
+}
