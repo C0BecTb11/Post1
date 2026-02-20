@@ -407,3 +407,66 @@ h1 {
     max-height: 250px;
   }
 }
+
+/* ===============================
+   АДАПТАЦИЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА
+=============================== */
+
+@media (max-width: 600px) {
+  /* Заголовок поменьше */
+  h1 { font-size: 1.8em; padding: 10px 0; }
+
+  /* Навигация: кнопки на всю ширину, чтобы было удобно попадать пальцем */
+  .nav-container {
+    padding: 10px;
+    gap: 10px;
+  }
+  .nav-button {
+    width: 100%; 
+    padding: 15px;
+    font-size: 1.1em;
+  }
+
+  /* Модальное окно локации */
+  .location-content {
+    width: 95vw;
+    height: 90vh; /* Почти на весь экран */
+    padding: 15px;
+    flex-direction: column; /* Всё в одну колонку */
+    overflow-y: auto;
+  }
+
+  .location-top-section {
+    flex-direction: column; /* Картинка сверху, текст под ней */
+    align-items: center;
+    text-align: center;
+  }
+
+  .location-image {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+  }
+
+  .location-short-info {
+    width: 100%;
+  }
+
+  /* Панель слоев: переносим чуть выше, чтобы не мешала кнопкам навигации телефона */
+  .map-layers-panel {
+    bottom: 70px; 
+    flex-wrap: wrap; /* Если не влезает в ряд — переносим */
+    justify-content: center;
+    gap: 10px;
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  /* Координаты — в угол и поменьше */
+  .map-coordinates {
+    bottom: 5px;
+    right: 5px;
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+}
