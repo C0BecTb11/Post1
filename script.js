@@ -480,20 +480,30 @@ function drawLocations() {
 function openLocationModal(id) {
   if (!id) return;
 
-  const titleEl = document.getElementById("location-title");
-if (titleEl) titleEl.innerHTML = loc.title;
-  
   const modal = document.getElementById("location-modal");
   if (!modal) return;
 
+  // 1. Сначала находим данные о локации в массиве
   const loc = LOCATIONS.find(l => l.id === id);
-  if (!loc) return;
+  if (!loc) {
+    console.error("Локация не найдена:", id);
+    return;
+  }
 
-  document.getElementById("location-title").innerHTML = loc.title;
-  document.getElementById("location-owner").innerHTML = loc.owner;
-  document.getElementById("location-img").src = loc.img;
-  document.getElementById("location-description").innerHTML = loc.description;
+  // 2. Только ПОСЛЕ этого заполняем элементы данными из loc
+  const titleEl = document.getElementById("location-title");
+  if (titleEl) titleEl.innerHTML = loc.title;
 
+  const ownerEl = document.getElementById("location-owner");
+  if (ownerEl) ownerEl.innerHTML = loc.owner;
+
+  const imgEl = document.getElementById("location-img");
+  if (imgEl) imgEl.src = loc.img;
+
+  const descEl = document.getElementById("location-description");
+  if (descEl) descEl.innerHTML = loc.description;
+
+  // 3. Показываем модалку
   modal.classList.remove("hidden");
 }
 
