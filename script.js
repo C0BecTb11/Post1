@@ -467,8 +467,9 @@ document.addEventListener("change", function(e) {
 function drawLocations() {
   const layer = document.getElementById("layer-locations");
   if (!layer) return;
+  if (typeof LOCATIONS === "undefined") return;
 
-  layer.innerHTML = ""; // очистка перед отрисовкой
+  layer.innerHTML = "";
 
   LOCATIONS.forEach(loc => {
     const icon = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -481,8 +482,7 @@ function drawLocations() {
     icon.setAttribute("stroke-width", "1.5");
     icon.style.cursor = "pointer";
 
-    // событие клика
-    icon.addEventListener("click", e => {
+    icon.addEventListener("click", function(e) {
       e.stopPropagation();
       openLocationModal(loc.id);
     });
@@ -492,6 +492,8 @@ function drawLocations() {
 }
 
 function openLocationModal(id) {
+  if (!id) return;
+
   const modal = document.getElementById("location-modal");
   if (!modal) return;
 
@@ -509,3 +511,12 @@ function openLocationModal(id) {
 function closeLocationModal() {
   document.getElementById("location-modal").classList.add("hidden");
 }
+
+document.addEventListener("click", function(e) {
+  const modal = document.getElementById("location-modal");
+  if (!modal || modal.classList.contains("hidden")) return;
+
+  if (e.target === modal) {
+    closeLocationModal();
+  }
+});
