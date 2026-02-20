@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Теперь один код обрабатывает и правила, и FAQ
     const subBtn = e.target.closest(".sub-faq-button, .sub-rule-button");
     if (subBtn) {
-      playBtn(e); // если нужно звук
+      playClick(); // если нужно звук
       const isFaq = subBtn.classList.contains("sub-faq-button");
       const containerId = isFaq ? "sub-faq-container" : "sub-rules-container";
       const prefix = isFaq ? "faq" : "rules";
