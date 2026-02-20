@@ -423,38 +423,32 @@ layer.appendChild(yellowPolygon);
 =============================== */
 
 function initLayerControls() {
-
+function initLayerControls() {
   const checkboxes = document.querySelectorAll(".map-layers-panel input");
 
   const political = document.getElementById("layer-political");
   const icons = document.getElementById("layer-icons");
+  const locations = document.getElementById("layer-locations"); // добавляем слой
+  const history = document.getElementById("layer-history");
 
   if (!checkboxes.length) return;
 
   // по умолчанию всё скрыто
   if (political) political.style.display = "none";
   if (icons) icons.style.display = "none";
+  if (locations) locations.style.display = "none"; // <- скрываем
+  if (history) history.style.display = "none";
 
   checkboxes.forEach(box => {
-
     box.addEventListener("change", function() {
-
-      const layer = this.dataset.layer;
-
-      if (layer === "political" && political) {
-        political.style.display = this.checked ? "block" : "none";
-      }
-
-      if (layer === "icons" && icons) {
-        icons.style.display = this.checked ? "block" : "none";
-      }
-
+      const layerName = this.dataset.layer;
+      const layer = document.getElementById("layer-" + layerName);
+      if (!layer) return;
+      layer.style.display = this.checked ? "block" : "none";
     });
-
   });
-
 }
-
+  
 /* Слои */
 
 document.addEventListener("change", function(e) {
