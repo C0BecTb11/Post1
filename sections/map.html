@@ -47,3 +47,17 @@
 <div class="map-coordinates" id="map-coordinates">
   X: 0 | Y: 0
 </div>
+
+<div id="location-modal" class="location-modal hidden">
+  <div class="location-modal-content">
+    <button class="location-close-btn" onclick="closeLocationModal()">×</button>
+    <div class="location-inner">
+      <img id="location-img" src="" alt="Фото локации">
+      <div class="location-text">
+        <h2 id="location-title"></h2>
+        <p><strong>Кому принадлежит:</strong> <span id="location-owner"></span></p>
+        <div id="location-description"></div>
+      </div>
+    </div>
+  </div>
+</div>
