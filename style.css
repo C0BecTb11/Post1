@@ -241,6 +241,14 @@ h1 {
   pointer-events: none; /* чтобы не ломать клики */
 }
 
+#layer-locations {
+  pointer-events: all;
+}
+
+#layer-locations circle {
+  pointer-events: all;
+}
+
 .layer-btn {
   padding: 6px 12px;
   background: rgba(0,0,0,0.6);
