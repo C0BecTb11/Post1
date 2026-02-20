@@ -167,22 +167,34 @@ function getWrapper() {
   return document.querySelector(".map-wrapper");
 }
 
+/* ===============================
+       LIMIT POSITION
+============================== */
 function limitPosition() {
-  const map = getMap();
-  const wrapper = getWrapper();
+  const map = document.getElementById("map-container");
+  const wrapper = document.querySelector(".map-wrapper");
   if (!map || !wrapper) return;
 
-  const mapWidth = map.offsetWidth * scale;
-  const mapHeight = map.offsetHeight * scale;
+  const wW = wrapper.offsetWidth;
+  const wH = wrapper.offsetHeight;
+  const sW = map.offsetWidth * scale;
+  const sH = map.offsetHeight * scale;
 
-  const wrapperWidth = wrapper.offsetWidth;
-  const wrapperHeight = wrapper.offsetHeight;
+  // Центрируем по X, если карта меньше экрана, иначе ограничиваем края
+  if (sW <= wW) {
+    posX = (wW - sW) / 2;
+  } else {
+    if (posX > 0) posX = 0;
+    if (posX < wW - sW) posX = wW - sW;
+  }
 
-  const minX = Math.min(0, wrapperWidth - mapWidth);
-  const minY = Math.min(0, wrapperHeight - mapHeight);
-
-  posX = Math.max(minX, Math.min(0, posX));
-  posY = Math.max(minY, Math.min(0, posY));
+  // Центрируем по Y
+  if (sH <= wH) {
+    posY = (wH - sH) / 2;
+  } else {
+    if (posY > 0) posY = 0;
+    if (posY < wH - sH) posY = wH - sH;
+  }
 }
 
 /* ===============================
@@ -230,53 +242,54 @@ document.addEventListener("wheel", function (e) {
 }, { passive: false });
 
 /* ===============================
-   MAP TOUCH (PINCH + DRAG)
+   TOUCH CONTROL (MOBILE)
 ============================== */
 function initMapTouch() {
-  const wrapper = getWrapper();
-  const map = getMap();
+  const wrapper = document.querySelector(".map-wrapper");
+  const map = document.getElementById("map-container");
   if (!wrapper || !map) return;
 
-  let initialDistance = null;
+  let lastTouchX = 0;
+  let lastTouchY = 0;
+  let initialDist = 0;
 
-  wrapper.addEventListener("touchstart", function(e) {
-    if (e.touches.length === 2) {
-      initialDistance = getDistance(e.touches[0], e.touches[1]);
-      startScale = scale;
-    }
+  wrapper.addEventListener("touchstart", (e) => {
     if (e.touches.length === 1) {
       isDragging = true;
-      startX = e.touches[0].clientX - posX;
-      startY = e.touches[0].clientY - posY;
+      lastTouchX = e.touches[0].clientX - posX;
+      lastTouchY = e.touches[0].clientY - posY;
+    } else if (e.touches.length === 2) {
+      isDragging = false;
+      initialDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      startScale = scale;
     }
   }, { passive: false });
 
-  wrapper.addEventListener("touchmove", function(e) {
-    const map = getMap();
-    if (!map) return;
-
-    if (e.touches.length === 2 && initialDistance) {
-      e.preventDefault();
-      const currentDistance = getDistance(e.touches[0], e.touches[1]);
-      scale = startScale * (currentDistance / initialDistance);
-      scale = Math.min(Math.max(scale, 1), 5);
-      limitPosition();
-      updateGrid();
-    }
+  wrapper.addEventListener("touchmove", (e) => {
+    e.preventDefault(); // Запрещаем стандартный скролл страницы при движении карты
 
     if (e.touches.length === 1 && isDragging) {
-      e.preventDefault();
-      posX = e.touches[0].clientX - startX;
-      posY = e.touches[0].clientY - startY;
-      limitPosition();
+      posX = e.touches[0].clientX - lastTouchX;
+      posY = e.touches[0].clientY - lastTouchY;
+    } else if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const zoomFactor = dist / initialDist;
+      scale = Math.min(Math.max(startScale * zoomFactor, 1), 5);
     }
 
+    limitPosition();
     map.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+    updateGrid();
   }, { passive: false });
 
-  wrapper.addEventListener("touchend", function() {
+  wrapper.addEventListener("touchend", () => {
     isDragging = false;
-    initialDistance = null;
   });
 }
 
