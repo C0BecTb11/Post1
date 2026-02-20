@@ -496,3 +496,22 @@ function drawLocations() {
     layer.appendChild(icon);
   });
 }
+
+function openLocationModal(id) {
+  const modal = document.getElementById("location-modal");
+  if (!modal) return;
+
+  const loc = LOCATIONS.find(l => l.id === id);
+  if (!loc) return;
+
+  document.getElementById("location-title").innerHTML = loc.title;
+  document.getElementById("location-owner").innerHTML = loc.owner;
+  document.getElementById("location-img").src = loc.img;
+  document.getElementById("location-description").innerHTML = loc.description;
+
+  modal.classList.remove("hidden");
+}
+
+function closeLocationModal() {
+  document.getElementById("location-modal").classList.add("hidden");
+}
