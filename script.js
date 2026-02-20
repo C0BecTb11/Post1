@@ -466,7 +466,7 @@ document.addEventListener("change", function(e) {
 });
 
 function drawLocations() {
-
+function drawLocations() {
   const layer = document.getElementById("layer-locations");
   if (!layer) return;
 
@@ -477,12 +477,13 @@ function drawLocations() {
 
     icon.setAttribute("cx", loc.coords.x);
     icon.setAttribute("cy", loc.coords.y);
-    icon.setAttribute("r", loc.size / 2); // радиус
+    icon.setAttribute("r", loc.size / 2);
     icon.setAttribute("fill", "#ffffff");
     icon.setAttribute("stroke", "#000000");
     icon.setAttribute("stroke-width", "1.5");
     icon.style.cursor = "pointer";
 
+    // событие клика
     icon.addEventListener("click", e => {
       e.stopPropagation();
       openLocationModal(loc.id);
