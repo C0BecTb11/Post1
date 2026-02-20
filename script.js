@@ -480,35 +480,37 @@ function drawLocations() {
 function openLocationModal(id) {
   if (!id) return;
 
+  // 1. Находим модалку в DOM
   const modal = document.getElementById("location-modal");
   if (!modal) return;
 
-  // 1. Сначала находим данные о локации в массиве
+  // 2. Ищем данные о локации в массиве LOCATIONS (из locations.js)
   const loc = LOCATIONS.find(l => l.id === id);
   if (!loc) {
-    console.error("Локация не найдена:", id);
+    console.error("Данные для локации не найдены:", id);
     return;
   }
 
-  // 2. Только ПОСЛЕ этого заполняем элементы данными из loc
+  // 3. Заполняем поля данными. Важно: ID должны совпадать с map.html
   const titleEl = document.getElementById("location-title");
-  if (titleEl) titleEl.innerHTML = loc.title;
-
   const ownerEl = document.getElementById("location-owner");
-  if (ownerEl) ownerEl.innerHTML = loc.owner;
-
   const imgEl = document.getElementById("location-img");
-  if (imgEl) imgEl.src = loc.img;
-
   const descEl = document.getElementById("location-description");
+
+  if (titleEl) titleEl.innerHTML = loc.title;
+  if (ownerEl) ownerEl.innerHTML = loc.owner;
+  if (imgEl) imgEl.src = loc.img;
   if (descEl) descEl.innerHTML = loc.description;
 
-  // 3. Показываем модалку
+  // 4. Показываем модалку, удаляя класс hidden
   modal.classList.remove("hidden");
 }
 
 function closeLocationModal() {
-  document.getElementById("location-modal").classList.add("hidden");
+  const modal = document.getElementById("location-modal");
+  if (modal) {
+    modal.classList.add("hidden");
+  }
 }
 
 document.addEventListener("click", function(e) {
