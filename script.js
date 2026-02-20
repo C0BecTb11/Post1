@@ -423,7 +423,6 @@ layer.appendChild(yellowPolygon);
 =============================== */
 
 function initLayerControls() {
-function initLayerControls() {
   const checkboxes = document.querySelectorAll(".map-layers-panel input");
 
   const political = document.getElementById("layer-political");
