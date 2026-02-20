@@ -469,3 +469,30 @@ document.addEventListener("change", function(e) {
   layer.style.display = checkbox.checked ? "block" : "none";
 
 });
+
+function drawLocations() {
+
+  const layer = document.getElementById("layer-locations");
+  if (!layer) return;
+
+  layer.innerHTML = ""; // очистка перед отрисовкой
+
+  LOCATIONS.forEach(loc => {
+    const icon = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+
+    icon.setAttribute("cx", loc.coords.x);
+    icon.setAttribute("cy", loc.coords.y);
+    icon.setAttribute("r", loc.size / 2); // радиус
+    icon.setAttribute("fill", "#ffffff");
+    icon.setAttribute("stroke", "#000000");
+    icon.setAttribute("stroke-width", "1.5");
+    icon.style.cursor = "pointer";
+
+    icon.addEventListener("click", e => {
+      e.stopPropagation();
+      openLocationModal(loc.id);
+    });
+
+    layer.appendChild(icon);
+  });
+}
