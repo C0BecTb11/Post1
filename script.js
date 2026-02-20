@@ -466,7 +466,6 @@ document.addEventListener("change", function(e) {
 });
 
 function drawLocations() {
-function drawLocations() {
   const layer = document.getElementById("layer-locations");
   if (!layer) return;
 
