@@ -296,42 +296,60 @@ h1 {
   cursor: pointer;
 }
 
+/* ===============================
+   LOCATION MODAL
+=============================== */
+
 .location-modal {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 800px;
-  max-width: 95%;
-  max-height: 90vh;
-  background: #111;
-  border: 2px solid #00ffcc;
-  border-radius: 12px;
-  padding: 20px;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 10000;
-  overflow-y: auto;
-  box-shadow: 0 0 25px rgba(0,0,0,0.7);
 }
 
 .location-content {
+  width: 800px;
+  max-width: 90vw;
+  max-height: 80vh;
+
+  background: #111;
+  border-radius: 12px;
+  padding: 20px;
+
   display: flex;
   gap: 20px;
-  align-items: flex-start;
+
+  overflow: hidden;
 }
 
 .location-image {
-  width: 250px;
-  height: auto;
-  max-height: 300px;
-  object-fit: contain; /* ключевой момент */
+  width: 300px;
+  height: 200px;
+
+  object-fit: contain;   /* ВАЖНО — без обрезки */
+  background: #000;
   border-radius: 8px;
   flex-shrink: 0;
 }
 
 .location-text {
   flex: 1;
+  overflow-y: auto;
 }
 
-.location-modal.hidden {
-  display: none;
+.location-text h2 {
+  margin-top: 0;
+}
+
+.location-text button {
+  margin-top: 15px;
+  padding: 6px 12px;
+  background: #0066ff;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
 }
