@@ -380,3 +380,36 @@ yellowPolygon.setAttribute("stroke-width", "2");
 layer.appendChild(yellowPolygon);
   
 }
+
+  /* ===============================
+     4️⃣ ОРАНЖЕВАЯ ТЕРРИТОРИЯ
+  =============================== */
+
+  const orangePoints = [
+    [42, 405],
+    [108, 392],
+    [139, 384],
+    [166, 339],
+    [198, 296],
+    [236, 284],
+    [128, 209],
+    [62, 248],
+    [37, 291],
+    [24, 354],
+    [8, 394]
+  ];
+
+  const orangePolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+
+  orangePolygon.setAttribute(
+    "points",
+    orangePoints.map(p => `${p[0]},${p[1]}`).join(" ")
+  );
+
+  // Оранжевый цвет с прозрачностью 0.35 и яркой обводкой
+  orangePolygon.setAttribute("fill", "rgba(255, 140, 0, 0.35)");
+  orangePolygon.setAttribute("stroke", "#ff8c00");
+  orangePolygon.setAttribute("stroke-width", "2");
+
+  layer.appendChild(orangePolygon);
+}
