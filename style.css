@@ -288,25 +288,78 @@ h1 {
   border-color: #0066ff;
 }
 
+/* --- ПАНЕЛЬ СЛОЕВ (ОБНОВЛЕННАЯ) --- */
+
 .map-layers-panel {
   position: absolute;
-  top: 10px;      /* Переносим наверх */
-  right: 10px;    /* В правый угол */
-  left: auto;
-  transform: none;
+  top: 10px;
+  right: 10px;
   z-index: 1000;
-
   background: rgba(0, 0, 0, 0.85); 
   padding: 12px;
   border: 1px solid #00ffcc;
   border-radius: 8px;
   display: flex;
-  flex-direction: column; /* Вертикальный список аккуратнее */
+  flex-direction: column; /* Элементы в колонку */
   gap: 8px;
   backdrop-filter: blur(10px);
-  pointer-events: auto; /* Разрешаем клики по панели */
+  pointer-events: auto;
+  
+  /* Анимация сворачивания */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 40px;
+  overflow: hidden;
 }
 
+/* Кнопка-стрелка (крестик/меню) */
+.layers-toggle-btn {
+  background: none;
+  border: none;
+  color: #00ffcc;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 5px;
+  display: flex;
+  align-self: flex-end; /* Крестик прижат вправо */
+  transition: transform 0.3s ease;
+}
+
+.layers-toggle-btn:hover {
+  color: #fff;
+  text-shadow: 0 0 8px #00ffcc;
+}
+
+/* Контейнер для чекбоксов */
+.layers-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: opacity 0.2s ease;
+}
+
+/* --- СОСТОЯНИЕ СВЕРНУТОЙ ПАНЕЛИ --- */
+
+.map-layers-panel.collapsed {
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(0, 255, 204, 0.4);
+}
+
+.map-layers-panel.collapsed .layers-content {
+  opacity: 0;
+  pointer-events: none;
+  display: none; /* Полностью убираем, чтобы не занимало место */
+}
+
+.map-layers-panel.collapsed .layers-toggle-btn {
+  margin-bottom: 0;
+  align-self: center; /* Иконка ☰ по центру квадратика */
+}
+
+/* Остальные стили слоев */
 .layer-item {
   font-size: 13px;
   color: #fff;
@@ -320,6 +373,7 @@ h1 {
 .layer-item input {
   cursor: pointer;
 }
+
 
 /* --- LOCATION MODAL --- */
 
