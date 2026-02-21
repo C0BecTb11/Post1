@@ -378,8 +378,6 @@ yellowPolygon.setAttribute("stroke", "#ffc800");
 yellowPolygon.setAttribute("stroke-width", "2");
 
 layer.appendChild(yellowPolygon);
-  
-}
 
   /* ===============================
      4️⃣ ОРАНЖЕВАЯ ТЕРРИТОРИЯ
