@@ -100,7 +100,11 @@ function limitPosition() {
   }
 }
 
-// Зум колесиком мыши (Исправлено: зум в точку курсора)
+// Глобальные переменные для перемещения
+let mStartX, mStartY;
+let lastDist = 0;
+
+// Зум колесиком (Глобальный, работает только если мы над картой)
 document.addEventListener("wheel", function (e) {
   const wrapper = getWrapper();
   if (!wrapper || !wrapper.contains(e.target)) return;
@@ -124,54 +128,54 @@ document.addEventListener("wheel", function (e) {
   updateMapTransform();
 }, { passive: false });
 
-// Управление мышью (ПК)
+// ОБРАБОТЧИКИ ДВИЖЕНИЯ (Вынесены из функций инициализации)
+window.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+  posX = e.clientX - mStartX;
+  posY = e.clientY - mStartY;
+  limitPosition();
+  updateMapTransform();
+});
+
+window.addEventListener("mouseup", () => {
+  isDragging = false;
+  const wrapper = getWrapper();
+  if (wrapper) wrapper.style.cursor = "grab";
+});
+
 function initMapMouse() {
   const wrapper = getWrapper();
-  let mStartX, mStartY;
+  if (!wrapper) return;
 
   wrapper.addEventListener("mousedown", (e) => {
-    if (e.button !== 0) return;
+    if (e.button !== 0) return; // Только левая кнопка
     isDragging = true;
     mStartX = e.clientX - posX;
     mStartY = e.clientY - posY;
     wrapper.style.cursor = "grabbing";
   });
-
-  window.addEventListener("mousemove", (e) => {
-    if (!isDragging) return;
-    posX = e.clientX - mStartX;
-    posY = e.clientY - mStartY;
-    limitPosition();
-    updateMapTransform();
-  });
-
-  window.addEventListener("mouseup", () => {
-    isDragging = false;
-    if (wrapper) wrapper.style.cursor = "grab";
-  });
 }
 
-// Управление тачскрином (Смартфоны)
 function initMapTouch() {
   const wrapper = getWrapper();
-  let lastDist = 0;
-  let tStartX, tStartY;
+  if (!wrapper) return;
 
   wrapper.addEventListener("touchstart", (e) => {
     if (e.touches.length === 1) {
       isDragging = true;
-      tStartX = e.touches[0].clientX - posX;
-      tStartY = e.touches[0].clientY - posY;
+      const touch = e.touches[0];
+      mStartX = touch.clientX - posX;
+      mStartY = touch.clientY - posY;
     } else if (e.touches.length === 2) {
       lastDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
     }
   }, { passive: false });
 
   wrapper.addEventListener("touchmove", (e) => {
-    e.preventDefault();
     if (e.touches.length === 1 && isDragging) {
-      posX = e.touches[0].clientX - tStartX;
-      posY = e.touches[0].clientY - tStartY;
+      const touch = e.touches[0];
+      posX = touch.clientX - mStartX;
+      posY = touch.clientY - mStartY;
     } else if (e.touches.length === 2) {
       const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
       const zoom = dist / lastDist;
@@ -181,6 +185,8 @@ function initMapTouch() {
     limitPosition();
     updateMapTransform();
   }, { passive: false });
+
+  wrapper.addEventListener("touchend", () => { isDragging = false; });
 }
 
 /* ==========================================================================
