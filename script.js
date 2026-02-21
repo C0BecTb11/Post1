@@ -119,7 +119,7 @@ document.addEventListener("wheel", function (e) {
 
   const delta = e.deltaY > 0 ? -0.2 : 0.2;
   const oldScale = scale;
-  scale = Math.min(Math.max(scale + delta, 1), 5);
+  scale = Math.min(Math.max(scale + delta, 0.2), 5);
 
   posX = mouseX - mapX * scale;
   posY = mouseY - mapY * scale;
@@ -179,7 +179,7 @@ function initMapTouch() {
     } else if (e.touches.length === 2) {
       const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
       const zoom = dist / lastDist;
-      scale = Math.min(Math.max(scale * zoom, 1), 5);
+      scale = Math.min(Math.max(scale * zoom, 0.2), 5);
       lastDist = dist;
     }
     limitPosition();
@@ -193,7 +193,7 @@ function initMapTouch() {
    3. ОТОБРАЖЕНИЕ ОБЪЕКТОВ И СЛОЕВ
    ========================================================================== */
 function centerMap() {
-  scale = 1;
+  scale = 0.5;
   limitPosition(); 
   updateMapTransform();
 }
