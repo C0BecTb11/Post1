@@ -288,7 +288,7 @@ h1 {
   border-color: #0066ff;
 }
 
-/* --- ПАНЕЛЬ СЛОЕВ (ОБНОВЛЕННАЯ) --- */
+/* --- ПАНЕЛЬ СЛОЕВ (С ПОДДЕРЖКОЙ СВОРАЧИВАНИЯ) --- */
 
 .map-layers-panel {
   position: absolute;
@@ -300,18 +300,18 @@ h1 {
   border: 1px solid #00ffcc;
   border-radius: 8px;
   display: flex;
-  flex-direction: column; /* Элементы в колонку */
+  flex-direction: column;
   gap: 8px;
   backdrop-filter: blur(10px);
   pointer-events: auto;
   
-  /* Анимация сворачивания */
+  /* Плавный переход для всех изменений */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 40px;
   overflow: hidden;
 }
 
-/* Кнопка-стрелка (крестик/меню) */
+/* Кнопка-переключатель (крестик/бургер) */
 .layers-toggle-btn {
   background: none;
   border: none;
@@ -321,8 +321,9 @@ h1 {
   padding: 0;
   margin-bottom: 5px;
   display: flex;
-  align-self: flex-end; /* Крестик прижат вправо */
+  align-self: flex-end; /* Крестик справа */
   transition: transform 0.3s ease;
+  user-select: none;
 }
 
 .layers-toggle-btn:hover {
@@ -330,7 +331,7 @@ h1 {
   text-shadow: 0 0 8px #00ffcc;
 }
 
-/* Контейнер для чекбоксов */
+/* Контейнер самих чекбоксов */
 .layers-content {
   display: flex;
   flex-direction: column;
@@ -338,10 +339,10 @@ h1 {
   transition: opacity 0.2s ease;
 }
 
-/* --- СОСТОЯНИЕ СВЕРНУТОЙ ПАНЕЛИ --- */
+/* --- СОСТОЯНИЕ КОГДА ПАНЕЛЬ ЗАКРЫТА --- */
 
 .map-layers-panel.collapsed {
-  width: 40px;
+  width: 40px;  /* Становится маленьким квадратиком */
   height: 40px;
   padding: 8px;
   background: rgba(0, 0, 0, 0.6);
@@ -351,29 +352,13 @@ h1 {
 .map-layers-panel.collapsed .layers-content {
   opacity: 0;
   pointer-events: none;
-  display: none; /* Полностью убираем, чтобы не занимало место */
+  display: none; /* Убираем из потока, чтобы не кликалось случайно */
 }
 
 .map-layers-panel.collapsed .layers-toggle-btn {
   margin-bottom: 0;
-  align-self: center; /* Иконка ☰ по центру квадратика */
+  align-self: center; /* Центруем иконку ☰ */
 }
-
-/* Остальные стили слоев */
-.layer-item {
-  font-size: 13px;
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-}
-
-.layer-item input {
-  cursor: pointer;
-}
-
 
 /* --- LOCATION MODAL --- */
 
