@@ -218,6 +218,20 @@ function initLayerControls() {
   });
 }
 
+function toggleLayersPanel() {
+  const panel = document.getElementById("layers-panel");
+  const icon = document.getElementById("toggle-icon");
+  if (!panel || !icon) return;
+
+  panel.classList.toggle("collapsed");
+
+  if (panel.classList.contains("collapsed")) {
+    icon.innerText = "☰"; // Иконка меню, когда закрыто
+  } else {
+    icon.innerText = "✖"; // Крестик, когда открыто
+  }
+}
+
 function drawLocations() {
   const layer = document.getElementById("layer-locations");
   // Проверка на существование слоя и массива данных
