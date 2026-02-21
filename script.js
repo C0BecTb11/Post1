@@ -220,22 +220,35 @@ function initLayerControls() {
 
 function drawLocations() {
   const layer = document.getElementById("layer-locations");
+  // Проверка на существование слоя и массива данных
   if (!layer || typeof LOCATIONS === "undefined") return;
-  layer.innerHTML = "";
+
+  layer.innerHTML = ""; // Очищаем слой перед отрисовкой
 
   LOCATIONS.forEach(loc => {
-    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    circle.setAttribute("cx", loc.coords.x);
-    circle.setAttribute("cy", loc.coords.y);
-    circle.setAttribute("r", loc.size / 2);
-    circle.setAttribute("fill", "#ffffff");
-    circle.setAttribute("stroke", "#000");
-    circle.style.cursor = "pointer";
-    circle.addEventListener("click", (e) => {
-      e.stopPropagation();
+    // Создаем элемент image для SVG
+    const icon = document.createElementNS("http://www.w3.org/2000/svg", "image");
+
+    // Указываем путь к PNG (используем href)
+    icon.setAttributeNS("http://www.w3.org/1999/xlink", "href", loc.icon);
+
+    // Центрируем иконку: координаты минус половина размера
+    const halfSize = loc.size / 2;
+    icon.setAttribute("x", loc.coords.x - halfSize);
+    icon.setAttribute("y", loc.coords.y - halfSize);
+    
+    // Устанавливаем размер
+    icon.setAttribute("width", loc.size);
+    icon.setAttribute("height", loc.size);
+
+    // Стили и клик
+    icon.style.cursor = "pointer";
+    icon.addEventListener("click", (e) => {
+      e.stopPropagation(); // Чтобы клик не ушел на саму карту
       openLocationModal(loc.id);
     });
-    layer.appendChild(circle);
+
+    layer.appendChild(icon);
   });
 }
 
