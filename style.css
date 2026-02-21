@@ -245,7 +245,7 @@ h1 {
 
 /* --- ИСПРАВЛЕНИЕ КЛИКОВ НА КАРТЕ --- */
 
-/* Сами контейнеры слоев НЕ должны ловить клики (пропускают их на карту) */
+/* Контейнеры слоев пропускают клики сквозь себя на саму карту */
 .map-overlay, 
 #layer-political, 
 #layer-locations, 
@@ -254,15 +254,22 @@ h1 {
   pointer-events: none;
 }
 
-/* А вот объекты внутри них (кружки, иконки) — ДОЛЖНЫ быть кликабельными */
+/* А объекты внутри них — ловят клики (теперь и картинки-иконки тоже) */
 #layer-locations circle, 
+#layer-locations image,  /* <--- Добавили это для новых иконок */
 #layer-icons image,
 .map-marker {
   pointer-events: auto; 
   cursor: pointer;
 }
 
-/* Политический слой (заливка цветом) тоже должен пропускать клики */
+/* Картинки иконок делаем четкими при зуме (особенно если это пиксель-арт) */
+#layer-locations image {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Политический слой (заливка) полностью игнорирует мышь */
 #layer-political polygon {
   pointer-events: none; 
 }
