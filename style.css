@@ -243,12 +243,28 @@ h1 {
   pointer-events: none; /* чтобы не ломать клики */
 }
 
-#layer-locations {
-  pointer-events: all;
+/* --- ИСПРАВЛЕНИЕ КЛИКОВ НА КАРТЕ --- */
+
+/* Сами контейнеры слоев НЕ должны ловить клики (пропускают их на карту) */
+.map-overlay, 
+#layer-political, 
+#layer-locations, 
+#layer-icons, 
+#layer-history {
+  pointer-events: none;
 }
 
-#layer-locations circle {
-  pointer-events: all;
+/* А вот объекты внутри них (кружки, иконки) — ДОЛЖНЫ быть кликабельными */
+#layer-locations circle, 
+#layer-icons image,
+.map-marker {
+  pointer-events: auto; 
+  cursor: pointer;
+}
+
+/* Политический слой (заливка цветом) тоже должен пропускать клики */
+#layer-political polygon {
+  pointer-events: none; 
 }
 
 .layer-btn {
