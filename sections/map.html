@@ -1,9 +1,6 @@
 <div class="map-wrapper">
-
   <div class="map-container" id="map-container">
-    
     <img src="images/map.png" class="map-image" draggable="false">
-
     <div class="map-grid"></div>
 
     <svg id="map-overlay" class="map-overlay">
@@ -13,58 +10,29 @@
       <g id="layer-history"></g>
     </svg>
 
-    <div class="map-markers" id="map-markers">
-      <!-- В будущем сюда будем вставлять маркеры -->
-    </div>
-
+    <div class="map-markers" id="map-markers"></div>
   </div>
 
-  <!-- Панель слоёв ПЕРЕНЕСЕНА -->
-  <div class="map-layers-panel">
-    <label class="layer-item">
-      <input type="checkbox" data-layer="political">
-      Политический
-    </label>
+  <div class="map-layers-panel" id="layers-panel">
+    <button class="layers-toggle-btn" onclick="toggleLayersPanel()">
+      <span id="toggle-icon">✖</span>
+    </button>
 
-    <label class="layer-item">
-      <input type="checkbox" data-layer="icons">
-      Иконки
-    </label>
-
-    <label class="layer-item">
-  <input type="checkbox" data-layer="locations">
-  Локации
-</label>
-
-<label class="layer-item">
-  <input type="checkbox" data-layer="history">
-  Исторические моменты
-</label>
-  </div>
-
-</div>
-
-<div class="map-coordinates" id="map-coordinates">
-  X: 0 | Y: 0
-</div>
-
-<div id="location-modal" class="location-modal hidden">
-  <div class="location-content">
-    <button class="location-close-btn" onclick="closeLocationModal()">×</button>
-
-    <div class="location-top-section">
-      <img id="location-img" class="location-image" src="" alt="Фото локации">
-      
-      <div class="location-short-info">
-        <h2 id="location-title"></h2>
-        <p><strong>Кому принадлежит:</strong> <span id="location-owner"></span></p>
-      </div>
+    <div class="layers-content">
+      <label class="layer-item">
+        <input type="checkbox" data-layer="political"> Политический
+      </label>
+      <label class="layer-item">
+        <input type="checkbox" data-layer="icons"> Иконки
+      </label>
+      <label class="layer-item">
+        <input type="checkbox" data-layer="locations"> Локации
+      </label>
+      <label class="layer-item">
+        <input type="checkbox" data-layer="history"> Исторические моменты
+      </label>
     </div>
-
-    <div class="location-full-description">
-      <h3>Описание:</h3>
-      <div id="location-description"></div>
-    </div>
-
   </div>
 </div>
+
+<div class="map-coordinates" id="map-coordinates">X: 0 | Y: 0</div>
