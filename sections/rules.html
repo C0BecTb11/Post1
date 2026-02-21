@@ -12,22 +12,3 @@
 <div id="sub-rules-container" class="content" style="margin-top: 15px;">
   <p>Выберите подраздел для просмотра. Контент пока отсутствует.</p>
 </div>
-
-<script>
-  const subButtons = document.querySelectorAll('.sub-rule-button');
-  const subContainer = document.getElementById('sub-rules-container');
-
-  subButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.dataset.target;
-      // Если файла нет, выводим заглушку
-      fetch(`sections/rules-${target}.html`)
-        .then(res => {
-          if (!res.ok) return `<p>Контент для "${btn.textContent}" пока не готов.</p>`;
-          return res.text();
-        })
-        .then(html => subContainer.innerHTML = html)
-        .catch(err => subContainer.innerHTML = `<p>Ошибка загрузки подраздела: ${err}</p>`);
-    });
-  });
-</script>
