@@ -1,4 +1,6 @@
-/* --- Основные стили страницы --- */
+/* ==========================================================================
+   1. БАЗОВЫЕ НАСТРОЙКИ
+   ========================================================================== */
 body {
   margin: 0;
   padding: 0;
@@ -8,13 +10,20 @@ body {
 }
 
 h1 {
-  text-align: center;
+  margin: 0;
   padding: 20px 0;
   font-size: 2.5em;
+  text-align: center;
   text-shadow: 0 0 10px #00ffcc;
 }
 
-/* --- Контейнер кнопок навигации --- */
+.hidden { 
+  display: none !important;
+}
+
+/* ==========================================================================
+   2. ГЛАВНАЯ НАВИГАЦИЯ И КНОПКИ
+   ========================================================================== */
 .nav-container {
   display: flex;
   flex-wrap: wrap;
@@ -23,17 +32,16 @@ h1 {
   padding: 20px;
 }
 
-/* --- Стиль кнопок --- */
 .nav-button {
+  padding: 20px 40px;
+  font-size: 1.2em;
+  text-align: center;
+  cursor: pointer;
   background: linear-gradient(145deg, #111, #222);
   border: 2px solid #00ffcc;
   border-radius: 15px;
-  padding: 20px 40px;
-  font-size: 1.2em;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: center;
   box-shadow: 0 0 15px #00ffcc44;
+  transition: all 0.3s ease;
 }
 
 .nav-button:hover {
@@ -42,27 +50,7 @@ h1 {
   box-shadow: 0 0 25px #00ffccaa;
 }
 
-/* --- Секция контента --- */
-.content {
-  max-width: 900px;
-  margin: 20px auto;
-  padding: 20px;
-  display: block; /* всегда показываем контейнер */
-  border: 1px solid #00ffcc;
-  border-radius: 15px;
-  background: #111;
-  box-shadow: 0 0 20px #00ffcc44;
-}
-
-/* --- Адаптив --- */
-@media(max-width: 600px){
-  .nav-button {
-    padding: 15px 25px;
-    font-size: 1em;
-  }
-}
-
-/* Красная неоновая кнопка */
+/* Специфичные кнопки */
 .red-neon {
   border-color: #ff0000;
   box-shadow: 0 0 15px #ff0000, 0 0 30px #ff000055;
@@ -72,42 +60,53 @@ h1 {
   box-shadow: 0 0 30px #ff0000, 0 0 60px #ff000088;
 }
 
-.warning-block {
-  border: 2px solid #ff0000;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  background: rgba(255, 0, 0, 0.08);
-  box-shadow: 0 0 15px #ff000055;
-  color: #ff4d4d;
-  font-weight: 600;
+/* ==========================================================================
+   3. ОСНОВНОЙ КОНТЕНТ И БЛОКИ ИНФОРМАЦИИ
+   ========================================================================== */
+.content {
+  display: block;
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #111;
+  border: 1px solid #00ffcc;
+  border-radius: 15px;
+  box-shadow: 0 0 20px #00ffcc44;
 }
 
-/* ===============================
-   БАЗОВЫЕ КАРТОЧКИ
-=============================== */
+.warning-block {
+  margin-bottom: 20px;
+  padding: 15px;
+  font-weight: 600;
+  color: #ff4d4d;
+  background: rgba(255, 0, 0, 0.08);
+  border: 2px solid #ff0000;
+  border-radius: 8px;
+  box-shadow: 0 0 15px #ff000055;
+}
 
+/* Карточки лора / информации */
 .info-block {
+  margin: 16px 0;
+  padding: 18px 20px;
   background: rgba(20, 20, 25, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-left: 4px solid #3a86ff;
-  padding: 18px 20px;
-  margin: 16px 0;
+  border-left: 4px solid #3a86ff; /* Цвет по умолчанию */
   border-radius: 10px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  animation: fadeSlide 0.4s ease forwards;
   opacity: 0;
+  animation: fadeSlide 0.4s ease forwards;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .info-block:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 }
 
 .info-title {
+  margin-bottom: 8px;
   font-size: 18px;
   font-weight: 600;
-  margin-bottom: 8px;
 }
 
 .info-text {
@@ -116,52 +115,27 @@ h1 {
   opacity: 0.9;
 }
 
-/* Фракции */
-.info-faction {
-  border-left-color: #ff006e;
-}
-
-/* Локации */
-.info-location {
-  border-left-color: #06d6a0;
-}
-
-/* Важная информация */
-.info-important {
-  border-left-color: #ffbe0b;
-}
-
-/* Закон / правила */
-.info-law {
-  border-left-color: #8338ec;
-}
-
-/* Опасная зона */
-.info-danger {
-  border-left-color: #e63946;
-}
+/* Модификаторы информационных блоков */
+.info-faction   { border-left-color: #ff006e; }
+.info-location  { border-left-color: #06d6a0; }
+.info-important { border-left-color: #ffbe0b; }
+.info-law       { border-left-color: #8338ec; }
+.info-danger    { border-left-color: #e63946; }
 
 @keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ===============================
-   MAP SYSTEM
-=============================== */
-
+/* ==========================================================================
+   4. ДВИЖОК КАРТЫ (MAP SYSTEM)
+   ========================================================================== */
 .map-wrapper {
-  width: 100%;
-  max-height: 80vh;
-  height: auto;
-  overflow: hidden;
   position: relative;
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  overflow: hidden;
   background: #0a0a0f;
   border-radius: 12px;
   touch-action: none;
@@ -180,38 +154,32 @@ h1 {
   pointer-events: none;
 }
 
-/* Сетка */
+/* Сетка и маркеры */
 .map-grid {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   pointer-events: none;
-
   background-image:
     linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
-
   background-size: 30px 30px;
-  }
+}
 
 .map-markers {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
 }
 
-/* Маркер */
 .map-marker {
   position: absolute;
-  transform: translate(-50%, -50%);
-  background: #ff006e;
-  color: white;
   padding: 4px 8px;
   font-size: 12px;
+  color: white;
+  background: #ff006e;
   border-radius: 6px;
   cursor: pointer;
+  transform: translate(-50%, -50%);
   transition: transform 0.2s ease;
 }
 
@@ -223,30 +191,27 @@ h1 {
   position: absolute;
   bottom: 10px;
   left: 10px;
-  right: auto;
-  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
   padding: 5px 10px;
-  border-radius: 4px;
   font-family: monospace;
   font-size: 12px;
   color: #00ffcc;
-  pointer-events: none; /* Пропускают клики сквозь себя на карту */
-  z-index: 1000;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 4px;
+  pointer-events: none; /* Пропускают клики */
 }
 
+/* ==========================================================================
+   5. СЛОИ КАРТЫ (SVG OVERLAY)
+   ========================================================================== */
 .map-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* чтобы не ломать клики */
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; 
 }
 
-/* --- ИСПРАВЛЕНИЕ КЛИКОВ НА КАРТЕ --- */
-
-/* Контейнеры слоев пропускают клики сквозь себя на саму карту */
-.map-overlay, 
+/* Контейнеры слоев пропускают клики */
 #layer-political, 
 #layer-locations, 
 #layer-icons, 
@@ -254,76 +219,57 @@ h1 {
   pointer-events: none;
 }
 
-/* А объекты внутри них — ловят клики (теперь и картинки-иконки тоже) */
+/* Объекты внутри слоев ловят клики */
 #layer-locations circle, 
-#layer-locations image,  /* <--- Добавили это для новых иконок */
-#layer-icons image,
-.map-marker {
+#layer-locations image,
+#layer-icons image {
   pointer-events: auto; 
   cursor: pointer;
 }
 
-/* Картинки иконок делаем четкими при зуме (особенно если это пиксель-арт) */
+/* Четкие иконки при зуме */
 #layer-locations image {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
 }
 
-/* Политический слой (заливка) полностью игнорирует мышь */
+/* Политический слой полностью игнорирует мышь */
 #layer-political polygon {
   pointer-events: none; 
 }
 
-.layer-btn {
-  padding: 6px 12px;
-  background: rgba(0,0,0,0.6);
-  color: white;
-  border: 1px solid #444;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.layer-btn.active {
-  background: #0066ff;
-  border-color: #0066ff;
-}
-
-/* --- ПАНЕЛЬ СЛОЕВ (С ПОДДЕРЖКОЙ СВОРАЧИВАНИЯ) --- */
-
+/* ==========================================================================
+   6. ПАНЕЛЬ УПРАВЛЕНИЯ СЛОЯМИ
+   ========================================================================== */
 .map-layers-panel {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 10px; right: 10px;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.85); 
-  padding: 12px;
-  border: 1px solid #00ffcc;
-  border-radius: 8px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 40px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid #00ffcc;
+  border-radius: 8px;
+  overflow: hidden;
   backdrop-filter: blur(10px);
   pointer-events: auto;
-  
-  /* Плавный переход для всех изменений */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 40px;
-  overflow: hidden;
 }
 
-/* Кнопка-переключатель (крестик/бургер) */
 .layers-toggle-btn {
+  align-self: flex-end;
+  margin-bottom: 5px;
+  padding: 0;
+  font-size: 18px;
+  color: #00ffcc;
   background: none;
   border: none;
-  color: #00ffcc;
-  font-size: 18px;
   cursor: pointer;
-  padding: 0;
-  margin-bottom: 5px;
-  display: flex;
-  align-self: flex-end; /* Крестик справа */
-  transition: transform 0.3s ease;
   user-select: none;
+  transition: transform 0.3s ease;
 }
 
 .layers-toggle-btn:hover {
@@ -331,7 +277,6 @@ h1 {
   text-shadow: 0 0 8px #00ffcc;
 }
 
-/* Контейнер самих чекбоксов */
 .layers-content {
   display: flex;
   flex-direction: column;
@@ -339,151 +284,130 @@ h1 {
   transition: opacity 0.2s ease;
 }
 
-/* --- СОСТОЯНИЕ КОГДА ПАНЕЛЬ ЗАКРЫТА --- */
+.layer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #fff;
+  white-space: nowrap;
+  cursor: pointer;
+}
 
+.layer-item input {
+  cursor: pointer;
+}
+
+/* Состояние: Панель закрыта */
 .map-layers-panel.collapsed {
-  width: 40px;  /* Становится маленьким квадратиком */
-  height: 40px;
+  width: 40px; height: 40px;
   padding: 8px;
   background: rgba(0, 0, 0, 0.6);
   border-color: rgba(0, 255, 204, 0.4);
 }
 
 .map-layers-panel.collapsed .layers-content {
+  display: none;
   opacity: 0;
   pointer-events: none;
-  display: none; /* Убираем из потока, чтобы не кликалось случайно */
 }
 
 .map-layers-panel.collapsed .layers-toggle-btn {
+  align-self: center;
   margin-bottom: 0;
-  align-self: center; /* Центруем иконку ☰ */
 }
 
-/* --- LOCATION MODAL --- */
-
-/* Основной контейнер модалки */
+/* ==========================================================================
+   7. МОДАЛЬНОЕ ОКНО ЛОКАЦИИ
+   ========================================================================== */
 .location-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
+  z-index: 10000;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000;
+  background: rgba(0,0,0,0.75);
 }
 
-/* Контент модалки */
 .location-content {
-  width: 800px;
-  max-width: 90vw;
-  /* Ограничиваем высоту, чтобы появился скролл внутри, если нужно */
-  max-height: 85vh; 
-
-  background: #111;
-  border-radius: 12px;
-  padding: 25px; /* Немного увеличим внутренний отступ */
-  
-  /* Меняем на колонку, чтобы секции шли друг под другом */
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 20px;
-
-  overflow-y: auto; /* Скролл для всего контента, если он не влезает */
-  position: relative; /* Для позиционирования кнопки закрытия */
+  width: 800px;
+  max-width: 90vw;
+  max-height: 85vh; 
+  padding: 25px;
+  background: #111;
+  border-radius: 12px;
+  overflow-y: auto; 
 }
 
-/* Кнопка закрытия */
 .location-close-btn {
   position: absolute;
-  top: 10px;
-  right: 15px;
+  top: 10px; right: 15px;
+  z-index: 1;
+  font-size: 28px;
+  color: #fff;
   background: none;
   border: none;
-  color: #fff;
-  font-size: 28px;
   cursor: pointer;
-  z-index: 1;
 }
 
-/* Верхняя секция (Картинка + Краткое инфо) */
 .location-top-section {
   display: flex;
   gap: 20px;
-  /* На мобильных устройствах складываем в колонку */
   flex-wrap: wrap; 
 }
 
-/* Картинка локации */
 .location-image {
-  width: 300px;
-  height: 200px;
-  object-fit: cover; /* Чтобы картинка заполняла блок */
+  flex-shrink: 0;
+  width: 300px; height: 200px;
   background: #000;
   border-radius: 8px;
-  flex-shrink: 0;
+  object-fit: cover; 
 }
 
-/* Краткая информация справа от картинки */
 .location-short-info {
-  flex: 1; /* Занимает оставшееся пространство */
-  min-width: 250px; /* Минимальная ширина, чтобы не схлопывалось совсем */
+  flex: 1;
+  min-width: 250px; 
 }
 
 .location-short-info h2 {
-  margin-top: 0;
-  color: #00ffcc; /* Добавим немного цвета заголовку */
-  margin-bottom: 15px;
+  margin: 0 0 15px 0;
+  color: #00ffcc;
 }
 
-/* Нижняя секция (Полное описание) */
 .location-full-description {
-  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Разделительная линия */
   padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); 
 }
 
 .location-full-description h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
+  margin: 0 0 10px 0;
   font-size: 1.1em;
   color: #aaa;
 }
 
-/* Стили для текста описания */
 #location-description {
   line-height: 1.6;
   color: #ddd;
 }
 
-/* Скрытие элемента */
-.hidden { 
-  display: none !important;
-}
-
-/* Адаптив для мобильных */
+/* ==========================================================================
+   8. АДАПТАЦИЯ (MOBILE)
+   ========================================================================== */
 @media (max-width: 600px) {
-  .location-top-section {
-    flex-direction: column; /* Картинка сверху, инфо снизу */
-  }
-  .location-image {
-    width: 100%; /* Картинка на всю ширину */
-    height: auto;
-    max-height: 250px;
-  }
-}
-
-/* ===============================
-   АДАПТАЦИЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА
-=============================== */
-
-@media (max-width: 600px) {
+  
+  /* База и Навигация */
   h1 { font-size: 1.6em; }
 
-  /* Кнопки навигации: делаем их крупнее для пальцев */
   .nav-container {
     padding: 10px;
     gap: 8px;
   }
+
   .nav-button {
     width: 100%; 
     padding: 18px;
@@ -491,20 +415,19 @@ h1 {
     box-sizing: border-box;
   }
 
-  /* Панель слоев на мобилках: делаем компактнее */
+  /* Панель слоев */
   .map-layers-panel {
-    top: 5px;
-    right: 5px;
+    top: 5px; right: 5px;
     padding: 8px;
   }
+  
   .layer-item { font-size: 11px; }
 
-  /* Модальное окно локации на весь экран телефона */
+  /* Модальное окно */
   .location-content {
-    width: 98vw;
-    height: 95vh;
+    width: 98vw; height: 95vh;
     padding: 15px;
-    border-radius: 0;
+    border-radius: 0; /* На телефонах лучше без скруглений впритык к краю */
   }
 
   .location-top-section {
@@ -515,4 +438,4 @@ h1 {
     width: 100%;
     height: 180px;
   }
-}
+    }
