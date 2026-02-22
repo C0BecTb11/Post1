@@ -458,9 +458,16 @@ h1 {
   .header-banner {
     padding: 10px 10px 0 10px;
   }
+   
   .header-logo {
     height: 120px;
     border-radius: 10px;
+  }
+   
+  .banner-title {
+    font-size: 1.8em; /* Уменьшаем шрифт для телефона */
+    letter-spacing: 4px; /* Уменьшаем интервал */
+    top: 55%;
   }
 
   .nav-container {
