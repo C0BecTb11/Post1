@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Главная | Постапокалипсис Лиорема</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Главная | Новый Рассвет</title>
+  
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Постапокалипсис Лиорема</h1>
+  <header class="header-banner">
+    <img src="images/logo.png" alt="Логотип: Постапокалипсис Лиорема" class="header-logo">
+  </header>
 
-<!-- Навигация -->
-<div class="nav-container main-nav">
-  <div class="nav-button main-nav" data-target="lore">Лор</div>
-  <div class="nav-button main-nav" data-target="faq">FAQ</div>
-  <div class="nav-button main-nav" data-target="rules">Правила</div>
-  <div class="nav-button main-nav" data-target="resources">Ресурсы</div>
-  <div class="nav-button main-nav" data-target="map">Карта</div>
-</div>
+  <nav class="nav-container main-nav">
+    <div class="nav-button main-nav" data-target="lore">Лор</div>
+    <div class="nav-button main-nav" data-target="faq">FAQ</div>
+    <div class="nav-button main-nav" data-target="rules">Правила</div>
+    <div class="nav-button main-nav" data-target="resources">Ресурсы</div>
+    <div class="nav-button main-nav" data-target="map">Карта</div>
+  </nav>
 
-<!-- Контейнер для подгружаемого контента -->
-<div id="content-container" class="content">
-  <p>Выберите раздел, чтобы начать.</p>
-</div>
+  <main id="content-container" class="content">
+    <p style="text-align: center; color: #aaa;">Выберите раздел, чтобы начать.</p>
+  </main>
 
-<!-- Скрипт для загрузки разделов -->
-<audio id="click-sound" src="assets/sounds/click.mp3" preload="auto"></audio>
-<script src="script.js?v=11"></script>
-<script src="locations.js"></script>
+  <audio id="click-sound" src="assets/sounds/click.mp3" preload="auto"></audio>
+  
+  <script src="locations.js"></script>
+  
+  <script src="script.js?v=11"></script>
+
 </body>
 </html>
