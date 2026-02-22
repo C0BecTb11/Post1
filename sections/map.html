@@ -36,3 +36,24 @@
 </div>
 
 <div class="map-coordinates" id="map-coordinates">X: 0 | Y: 0</div>
+
+<div id="location-modal" class="location-modal hidden">
+  <div class="location-content">
+    <button class="location-close-btn" onclick="closeLocationModal()">×</button>
+
+    <div class="location-top-section">
+      <img id="location-img" class="location-image" src="" alt="Фото локации">
+      
+      <div class="location-short-info">
+        <h2 id="location-title"></h2>
+        <p><strong>Кому принадлежит:</strong> <span id="location-owner"></span></p>
+      </div>
+    </div>
+
+    <div class="location-full-description">
+      <h3>Описание:</h3>
+      <div id="location-description"></div>
+    </div>
+
+  </div>
+</div>
