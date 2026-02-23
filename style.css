@@ -178,6 +178,24 @@ h1 {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* --- СЕТКА КАРТОЧЕК В ЛОРЕ --- */
+.lore-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* Интерактивная карточка в лоре */
+.lore-item-card {
+  cursor: pointer;
+}
+
+.lore-item-card:hover {
+  border-color: #00ffcc;
+  background: rgba(0, 255, 204, 0.05);
+}
+
 /* ==========================================================================
    4. ДВИЖОК КАРТЫ (MAP SYSTEM)
    ========================================================================== */
