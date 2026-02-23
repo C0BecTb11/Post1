@@ -46,10 +46,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Б) Подразделы (FAQ и Правила)
-    // Теперь один код обрабатывает и правила, и FAQ
     const subBtn = e.target.closest(".sub-faq-button, .sub-rule-button");
     if (subBtn) {
-      playClick(); // если нужно звук
+      playClick(); 
       const isFaq = subBtn.classList.contains("sub-faq-button");
       const containerId = isFaq ? "sub-faq-container" : "sub-rules-container";
       const prefix = isFaq ? "faq" : "rules";
@@ -61,9 +60,78 @@ document.addEventListener("DOMContentLoaded", function () {
           container.innerHTML = html;
           container.scrollIntoView({ behavior: "smooth", block: "start" });
         });
+      return;
+    }
+
+    // В) Вкладки внутри раздела "Лор" (ИСТОРИЯ, ФРАКЦИИ, ПЕРСОНАЖИ, ЛОКАЦИИ)
+    const loreBtn = e.target.closest(".lore-btn");
+    if (loreBtn) {
+      playClick();
+      const category = loreBtn.dataset.category;
+      loadLoreCategory(category);
+      return;
+    }
+
+    // Г) Клик по конкретной карточке в сгенерированном Лоре (открываем модалку)
+    const loreCard = e.target.closest(".lore-item-card");
+    if (loreCard) {
+      playClick();
+      const id = loreCard.dataset.id;
+      openLocationModal(id);
+      return;
     }
   });
 });
+
+/* ==========================================================================
+   1.5 ГЕНЕРАТОР РАЗДЕЛОВ ЛОРА
+   ========================================================================== */
+function loadLoreCategory(category) {
+  const container = document.getElementById("lore-content-area");
+  if (!container) return;
+
+  container.innerHTML = ""; // Очищаем контейнер
+
+  if (category === "locations") {
+    // Если выбрали Локации — берем данные из LOCATIONS
+    if (typeof LOCATIONS === "undefined" || LOCATIONS.length === 0) {
+      container.innerHTML = "<p style='color: #ff4d4d; text-align: center;'>База локаций пуста или повреждена.</p>";
+      return;
+    }
+    
+    let html = '<h3 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; text-align: center;">Известные территории:</h3>';
+    html += '<div class="lore-grid">';
+    
+    LOCATIONS.forEach(loc => {
+      // Генерируем HTML карточки для каждой локации
+      html += `
+        <div class="info-block info-location lore-item-card" data-id="${loc.id}">
+          <h3 class="info-title" style="color: #00ffcc; margin-top: 0;">${loc.title}</h3>
+          <p class="info-text" style="font-size: 13px; color: #aaa; margin-bottom: 8px;">
+            Владелец: ${loc.owner}
+          </p>
+          <p class="info-text" style="margin: 0; font-size: 12px; color: #888;">Нажмите, чтобы открыть архив...</p>
+        </div>
+      `;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+
+  } else {
+    // Для остальных вкладок пока выводим заглушку
+    const names = {
+      history: "История",
+      factions: "Фракции",
+      characters: "Персонажи"
+    };
+    container.innerHTML = `
+      <div class="warning-block" style="text-align: center;">
+        Архивы категории «${names[category]}» засекречены или еще не загружены в терминал.
+      </div>
+    `;
+  }
+}
 
 /* ==========================================================================
    2. ДВИЖОК КАРТЫ (ЗУМ И ПЕРЕМЕЩЕНИЕ)
@@ -100,11 +168,9 @@ function limitPosition() {
   }
 }
 
-// Глобальные переменные для перемещения
 let mStartX, mStartY;
 let lastDist = 0;
 
-// Зум колесиком (Глобальный, работает только если мы над картой)
 document.addEventListener("wheel", function (e) {
   const wrapper = getWrapper();
   if (!wrapper || !wrapper.contains(e.target)) return;
@@ -118,7 +184,6 @@ document.addEventListener("wheel", function (e) {
   const mapY = (mouseY - posY) / scale;
 
   const delta = e.deltaY > 0 ? -0.2 : 0.2;
-  const oldScale = scale;
   scale = Math.min(Math.max(scale + delta, 0.2), 5);
 
   posX = mouseX - mapX * scale;
@@ -128,7 +193,6 @@ document.addEventListener("wheel", function (e) {
   updateMapTransform();
 }, { passive: false });
 
-// ОБРАБОТЧИКИ ДВИЖЕНИЯ (Вынесены из функций инициализации)
 window.addEventListener("mousemove", (e) => {
   if (!isDragging) return;
   posX = e.clientX - mStartX;
@@ -148,7 +212,7 @@ function initMapMouse() {
   if (!wrapper) return;
 
   wrapper.addEventListener("mousedown", (e) => {
-    if (e.button !== 0) return; // Только левая кнопка
+    if (e.button !== 0) return; 
     isDragging = true;
     mStartX = e.clientX - posX;
     mStartY = e.clientY - posY;
@@ -201,7 +265,7 @@ function centerMap() {
 function updateGrid() {
   const grid = document.querySelector(".map-grid");
   if (!grid) return;
-  let size = 30 / scale; // Сетка масштабируется вместе с картой
+  let size = 30 / scale;
   grid.style.backgroundSize = `${size}px ${size}px`;
 }
 
@@ -226,39 +290,32 @@ function toggleLayersPanel() {
   panel.classList.toggle("collapsed");
 
   if (panel.classList.contains("collapsed")) {
-    icon.innerText = "☰"; // Иконка меню, когда закрыто
+    icon.innerText = "☰";
   } else {
-    icon.innerText = "✖"; // Крестик, когда открыто
+    icon.innerText = "✖";
   }
 }
 
 function drawLocations() {
   const layer = document.getElementById("layer-locations");
-  // Проверка на существование слоя и массива данных
   if (!layer || typeof LOCATIONS === "undefined") return;
 
-  layer.innerHTML = ""; // Очищаем слой перед отрисовкой
+  layer.innerHTML = "";
 
   LOCATIONS.forEach(loc => {
-    // Создаем элемент image для SVG
     const icon = document.createElementNS("http://www.w3.org/2000/svg", "image");
-
-    // Указываем путь к PNG (используем href)
     icon.setAttributeNS("http://www.w3.org/1999/xlink", "href", loc.icon);
 
-    // Центрируем иконку: координаты минус половина размера
     const halfSize = loc.size / 2;
     icon.setAttribute("x", loc.coords.x - halfSize);
     icon.setAttribute("y", loc.coords.y - halfSize);
     
-    // Устанавливаем размер
     icon.setAttribute("width", loc.size);
     icon.setAttribute("height", loc.size);
 
-    // Стили и клик
     icon.style.cursor = "pointer";
     icon.addEventListener("click", (e) => {
-      e.stopPropagation(); // Чтобы клик не ушел на саму карту
+      e.stopPropagation();
       openLocationModal(loc.id);
     });
 
@@ -300,128 +357,41 @@ function initMapClick() {
 /* ===============================
    FACTION TERRITORY
 =============================== */
-
 function drawFactionTerritory() {
-
   const layer = document.getElementById("layer-political");
   if (!layer) return;
 
   layer.innerHTML = "";
 
-  /* ===============================
-     1️⃣ СИНЯЯ ТЕРРИТОРИЯ
-  =============================== */
-
-  const bluePoints = [
-    [775, 100],
-    [816, 89],
-    [900, 34],
-    [882, 141],
-    [854, 164],
-    [804, 157],
-    [772, 131]
-  ];
-
+  const bluePoints = [ [775, 100], [816, 89], [900, 34], [882, 141], [854, 164], [804, 157], [772, 131] ];
   const bluePolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-
-  bluePolygon.setAttribute(
-    "points",
-    bluePoints.map(p => `${p[0]},${p[1]}`).join(" ")
-  );
-
+  bluePolygon.setAttribute("points", bluePoints.map(p => `${p[0]},${p[1]}`).join(" "));
   bluePolygon.setAttribute("fill", "rgba(0, 102, 255, 0.35)");
   bluePolygon.setAttribute("stroke", "#0066ff");
   bluePolygon.setAttribute("stroke-width", "2");
-
   layer.appendChild(bluePolygon);
 
-
-  /* ===============================
-     2️⃣ КРАСНАЯ ТЕРРИТОРИЯ
-  =============================== */
-
-  const redPoints = [
-    [773, 142],
-    [492, 379],
-    [491, 435],
-    [617, 493],
-    [797, 536],
-    [1019, 626],
-    [1021, 347],
-    [896, 320],
-    [831, 233],
-    [842, 168]
-  ];
-
+  const redPoints = [ [773, 142], [492, 379], [491, 435], [617, 493], [797, 536], [1019, 626], [1021, 347], [896, 320], [831, 233], [842, 168] ];
   const redPolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-
-  redPolygon.setAttribute(
-    "points",
-    redPoints.map(p => `${p[0]},${p[1]}`).join(" ")
-  );
-
+  redPolygon.setAttribute("points", redPoints.map(p => `${p[0]},${p[1]}`).join(" "));
   redPolygon.setAttribute("fill", "rgba(255, 0, 0, 0.35)");
   redPolygon.setAttribute("stroke", "#ff0000");
   redPolygon.setAttribute("stroke-width", "2");
-
   layer.appendChild(redPolygon);
 
-  /* ===============================
-   3️⃣ ЖЁЛТАЯ ТЕРРИТОРИЯ
-=============================== */
+  const yellowPoints = [ [317, 693], [270, 723], [229, 793], [259, 848], [347, 941], [479, 822], [449, 724] ];
+  const yellowPolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+  yellowPolygon.setAttribute("points", yellowPoints.map(p => `${p[0]},${p[1]}`).join(" "));
+  yellowPolygon.setAttribute("fill", "rgba(255, 200, 0, 0.35)");
+  yellowPolygon.setAttribute("stroke", "#ffc800");
+  yellowPolygon.setAttribute("stroke-width", "2");
+  layer.appendChild(yellowPolygon);
 
-const yellowPoints = [
-  [317, 693],
-  [270, 723],
-  [229, 793],
-  [259, 848],
-  [347, 941],
-  [479, 822],
-  [449, 724]
-];
-
-const yellowPolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-
-yellowPolygon.setAttribute(
-  "points",
-  yellowPoints.map(p => `${p[0]},${p[1]}`).join(" ")
-);
-
-yellowPolygon.setAttribute("fill", "rgba(255, 200, 0, 0.35)");
-yellowPolygon.setAttribute("stroke", "#ffc800");
-yellowPolygon.setAttribute("stroke-width", "2");
-
-layer.appendChild(yellowPolygon);
-
-  /* ===============================
-     4️⃣ ОРАНЖЕВАЯ ТЕРРИТОРИЯ
-  =============================== */
-
-  const orangePoints = [
-    [42, 405],
-    [108, 392],
-    [139, 384],
-    [166, 339],
-    [198, 296],
-    [236, 284],
-    [128, 209],
-    [62, 248],
-    [37, 291],
-    [24, 354],
-    [8, 394]
-  ];
-
+  const orangePoints = [ [42, 405], [108, 392], [139, 384], [166, 339], [198, 296], [236, 284], [128, 209], [62, 248], [37, 291], [24, 354], [8, 394] ];
   const orangePolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-
-  orangePolygon.setAttribute(
-    "points",
-    orangePoints.map(p => `${p[0]},${p[1]}`).join(" ")
-  );
-
-  // Оранжевый цвет с прозрачностью 0.35 и яркой обводкой
+  orangePolygon.setAttribute("points", orangePoints.map(p => `${p[0]},${p[1]}`).join(" "));
   orangePolygon.setAttribute("fill", "rgba(255, 140, 0, 0.35)");
   orangePolygon.setAttribute("stroke", "#ff8c00");
   orangePolygon.setAttribute("stroke-width", "2");
-
   layer.appendChild(orangePolygon);
 }
