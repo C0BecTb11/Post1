@@ -465,7 +465,64 @@ h1 {
 }
 
 /* ==========================================================================
-   8. АДАПТАЦИЯ (MOBILE)
+   8. WIKI-СИСТЕМА (ССЫЛКИ И КНОПКИ В ЛОРЕ)
+   ========================================================================== */
+.modal-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.modal-back-btn {
+  background: rgba(0, 255, 204, 0.1);
+  color: #00ffcc;
+  border: 1px solid #00ffcc;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.modal-back-btn:hover {
+  background: #00ffcc;
+  color: #000;
+  box-shadow: 0 0 10px #00ffcc;
+}
+
+/* Изменяем кнопку крестика, так как она теперь во flex-контейнере */
+.location-close-btn {
+  position: static; 
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* Стили для гиперссылок в тексте */
+.lore-link {
+  color: #00ffcc;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.lore-link:hover {
+  color: #fff;
+  text-shadow: 0 0 8px #00ffcc;
+  background: rgba(0, 255, 204, 0.15);
+  border-radius: 3px;
+}
+
+
+/* ==========================================================================
+   9. АДАПТАЦИЯ (MOBILE)
    ========================================================================== */
 @media (max-width: 600px) {
   
