@@ -89,47 +89,47 @@ document.addEventListener("DOMContentLoaded", function () {
 function loadLoreCategory(category) {
   const container = document.getElementById("lore-content-area");
   if (!container) return;
+  container.innerHTML = ""; 
 
-  container.innerHTML = ""; // Очищаем контейнер
-
+  // --- ЛОКАЦИИ ---
   if (category === "locations") {
-    // Если выбрали Локации — берем данные из LOCATIONS
     if (typeof LOCATIONS === "undefined" || LOCATIONS.length === 0) {
       container.innerHTML = "<p style='color: #ff4d4d; text-align: center;'>База локаций пуста или повреждена.</p>";
       return;
     }
-    
-    let html = '<h3 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; text-align: center;">Известные территории:</h3>';
-    html += '<div class="lore-grid">';
-    
+    let html = '<h3 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px;">Известные территории:</h3><div class="lore-grid">';
     LOCATIONS.forEach(loc => {
-      // Генерируем HTML карточки для каждой локации
-      html += `
-        <div class="info-block info-location lore-item-card" data-id="${loc.id}">
-          <h3 class="info-title" style="color: #00ffcc; margin-top: 0;">${loc.title}</h3>
-          <p class="info-text" style="font-size: 13px; color: #aaa; margin-bottom: 8px;">
-            Владелец: ${loc.owner}
-          </p>
-          <p class="info-text" style="margin: 0; font-size: 12px; color: #888;">Нажмите, чтобы открыть архив...</p>
-        </div>
-      `;
+      html += `<div class="info-block info-location lore-item-card" data-id="${loc.id}">
+                 <h3 class="info-title" style="color: #00ffcc; margin-top: 0;">${loc.title}</h3>
+                 <p class="info-text" style="font-size: 13px; color: #aaa; margin-bottom: 8px;">Владелец: ${loc.owner}</p>
+                 <p class="info-text" style="margin: 0; font-size: 12px; color: #888;">Нажмите, чтобы открыть архив...</p>
+               </div>`;
     });
-    
     html += '</div>';
     container.innerHTML = html;
-
-  } else {
-    // Для остальных вкладок пока выводим заглушку
-    const names = {
-      history: "История",
-      factions: "Фракции",
-      characters: "Персонажи"
-    };
-    container.innerHTML = `
-      <div class="warning-block" style="text-align: center;">
-        Архивы категории «${names[category]}» засекречены или еще не загружены в терминал.
-      </div>
-    `;
+  } 
+  
+  // --- ФРАКЦИИ ---
+  else if (category === "factions") {
+    if (typeof FACTIONS === "undefined" || FACTIONS.length === 0) {
+      container.innerHTML = "<p style='color: #ff4d4d; text-align: center;'>Данные о фракциях недоступны.</p>";
+      return;
+    }
+    let html = '<h3 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px;">Действующие группировки:</h3><div class="lore-grid">';
+    FACTIONS.forEach(fac => {
+      html += `<div class="info-block info-faction lore-item-card" data-id="${fac.id}">
+                 <h3 class="info-title" style="color: #ff006e; margin-top: 0;">${fac.title}</h3>
+                 <p class="info-text" style="margin: 0; font-size: 12px; color: #888;">Нажмите, чтобы открыть архив...</p>
+               </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  } 
+  
+  // --- ЗАГЛУШКА ДЛЯ ОСТАЛЬНОГО ---
+  else {
+    const names = { history: "История", characters: "Персонажи" };
+    container.innerHTML = `<div class="warning-block" style="text-align: center;">Архивы категории «${names[category]}» засекречены.</div>`;
   }
 }
 
@@ -324,41 +324,71 @@ function drawLocations() {
 }
 
 /* ==========================================================================
-   4. МОДАЛЬНОЕ ОКНО И УТИЛИТЫ
+   4. МОДАЛЬНОЕ ОКНО, WIKI И УТИЛИТЫ
    ========================================================================== */
-function openLocationModal(id) {
-  const loc = LOCATIONS.find(l => l.id === id);
-  if (!loc) return;
+let modalHistory = []; // Массив для запоминания истории переходов
 
-  document.getElementById("location-title").innerText = loc.title;
-  document.getElementById("location-owner").innerHTML = loc.owner;
+function openLocationModal(id, isBack = false) {
+  // 1. Ищем ID в Локациях или Фракциях
+  let data = null;
+  if (typeof LOCATIONS !== "undefined") data = LOCATIONS.find(l => l.id === id);
+  if (!data && typeof FACTIONS !== "undefined") data = FACTIONS.find(f => f.id === id);
   
-  // --- УМНАЯ ПРОВЕРКА МЕДИА (ФОТО ИЛИ ВИДЕО) ---
+  if (!data) return;
+
+  const titleEl = document.getElementById("location-title");
+
+  // 2. Если мы идем "вперед" (не нажимаем Назад), сохраняем ТЕКУЩУЮ карточку в историю
+  if (!isBack && titleEl.dataset.currentId) {
+    modalHistory.push(titleEl.dataset.currentId);
+  }
+
+  // 3. Заполняем данные
+  titleEl.innerText = data.title;
+  titleEl.dataset.currentId = id; // Запоминаем ID того, что сейчас открыли
+  document.getElementById("location-owner").innerHTML = data.owner || "Неизвестно";
+  
+  // Умная проверка медиа (Видео или Фото)
   const imgEl = document.getElementById("location-img");
   const videoEl = document.getElementById("location-video");
 
-  // Проверяем, есть ли у нас картинка и заканчивается ли она на .mp4
-  if (loc.img && loc.img.endsWith(".mp4")) {
-    imgEl.classList.add("hidden");        // Прячем обычную картинку
-    videoEl.src = loc.img;                // Загружаем путь к видео
-    videoEl.classList.remove("hidden");   // Показываем плеер
-    videoEl.play().catch(() => {});       // Запускаем видео
+  if (data.img && data.img.endsWith(".mp4")) {
+    imgEl.classList.add("hidden");
+    videoEl.src = data.img;
+    videoEl.classList.remove("hidden");
+    videoEl.play().catch(() => {});
   } else {
-    // Иначе показываем обычное фото
-    videoEl.classList.add("hidden");      // Прячем плеер
-    videoEl.pause();                      // Ставим видео на паузу
-    imgEl.src = loc.img;                  // Загружаем путь к картинке
-    imgEl.classList.remove("hidden");     // Показываем картинку
+    videoEl.classList.add("hidden");
+    videoEl.pause();
+    imgEl.src = data.img || "images/placeholder.jpg"; // Заглушка, если фото нет
+    imgEl.classList.remove("hidden");
   }
 
-  document.getElementById("location-description").innerHTML = loc.description;
+  document.getElementById("location-description").innerHTML = data.description;
+
+  // 4. Управляем кнопкой "Назад"
+  const backBtn = document.getElementById("modal-back-btn");
+  if (modalHistory.length > 0) {
+    backBtn.classList.remove("hidden");
+  } else {
+    backBtn.classList.add("hidden");
+  }
+
   document.getElementById("location-modal").classList.remove("hidden");
+}
+
+function goBackModal() {
+  if (modalHistory.length > 0) {
+    const prevId = modalHistory.pop(); // Достаем последний ID
+    openLocationModal(prevId, true); // Открываем его с флагом isBack = true
+  }
 }
 
 function closeLocationModal() {
   document.getElementById("location-modal").classList.add("hidden");
+  modalHistory = []; // Очищаем историю при закрытии
+  document.getElementById("location-title").dataset.currentId = ""; // Сбрасываем текущий ID
   
-  // Останавливаем и очищаем видео при закрытии карточки, чтобы не играло в фоне
   const videoEl = document.getElementById("location-video");
   if (videoEl) {
     videoEl.pause();
@@ -366,7 +396,14 @@ function closeLocationModal() {
   }
 }
 
-// Эту функцию мы сохранили (она выводит координаты X и Y в левый нижний угол)
+// 5. Глобальный слушатель для кликов по гиперссылкам внутри описаний
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("lore-link")) {
+    const targetId = e.target.dataset.id;
+    openLocationModal(targetId);
+  }
+});
+
 function initMapClick() {
   const map = getMap();
   const coordBox = document.getElementById("map-coordinates");
