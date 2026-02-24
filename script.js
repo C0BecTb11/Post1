@@ -332,15 +332,41 @@ function openLocationModal(id) {
 
   document.getElementById("location-title").innerText = loc.title;
   document.getElementById("location-owner").innerHTML = loc.owner;
-  document.getElementById("location-img").src = loc.img;
+  
+  // --- УМНАЯ ПРОВЕРКА МЕДИА (ФОТО ИЛИ ВИДЕО) ---
+  const imgEl = document.getElementById("location-img");
+  const videoEl = document.getElementById("location-video");
+
+  // Проверяем, есть ли у нас картинка и заканчивается ли она на .mp4
+  if (loc.img && loc.img.endsWith(".mp4")) {
+    imgEl.classList.add("hidden");        // Прячем обычную картинку
+    videoEl.src = loc.img;                // Загружаем путь к видео
+    videoEl.classList.remove("hidden");   // Показываем плеер
+    videoEl.play().catch(() => {});       // Запускаем видео
+  } else {
+    // Иначе показываем обычное фото
+    videoEl.classList.add("hidden");      // Прячем плеер
+    videoEl.pause();                      // Ставим видео на паузу
+    imgEl.src = loc.img;                  // Загружаем путь к картинке
+    imgEl.classList.remove("hidden");     // Показываем картинку
+  }
+
   document.getElementById("location-description").innerHTML = loc.description;
   document.getElementById("location-modal").classList.remove("hidden");
 }
 
 function closeLocationModal() {
   document.getElementById("location-modal").classList.add("hidden");
+  
+  // Останавливаем и очищаем видео при закрытии карточки, чтобы не играло в фоне
+  const videoEl = document.getElementById("location-video");
+  if (videoEl) {
+    videoEl.pause();
+    videoEl.src = "";
+  }
 }
 
+// Эту функцию мы сохранили (она выводит координаты X и Y в левый нижний угол)
 function initMapClick() {
   const map = getMap();
   const coordBox = document.getElementById("map-coordinates");
